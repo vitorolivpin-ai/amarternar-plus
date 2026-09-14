@@ -3,16 +3,18 @@ import { BookOpen, Search, Play, FileText, ExternalLink, Heart, Baby, Brain, Use
 import { useStore } from '../store';
 
 const conteudos = [
-  { id: 1, title: 'Pega correta na amamentação', source: 'Ministério da Saúde', type: 'article', category: 'breastfeeding', description: 'Guia completo sobre como posicionar o bebê para uma amamentação eficaz.', url: 'https://bvsms.saude.gov.br/bvs/publicacoes/saude_crianca_aleitamento_materno_cab23.pdf' },
-  { id: 2, title: 'Primeiros dias com o bebê', source: 'Sociedade Brasileira de Pediatria', type: 'article', category: 'babyCare', description: 'O que esperar e como cuidar do seu recém-nascido.', url: 'https://www.sbp.com.br/especiais/pediatria-para-familias/cuidados-com-o-bebe/os-primeiros-dias-do-bebe/' },
-  { id: 3, title: 'Como aumentar a produção de leite', source: 'YouTube - Ministério da Saúde', type: 'video', category: 'breastfeeding', description: 'Dicas práticas para estimular a produção de leite materno.', url: 'https://www.youtube.com/watch?v=QpgPHzHF6EI' },
-  { id: 4, title: 'Autocuidado no puerpério', source: 'Ministério da Saúde', type: 'article', category: 'motherCare', description: 'A importância de cuidar de si mesma durante o pós-parto.', url: 'https://bvsms.saude.gov.br/bvs/publicacoes/caderneta_gestante_3ed.pdf' },
-  { id: 5, title: 'Sinais de depressão pós-parto', source: 'CVV', type: 'article', category: 'mentalHealth', description: 'Como identificar e buscar ajuda para a depressão pós-parto.', url: 'https://www.cvv.org.br/' },
-  { id: 6, title: 'Banho do recém-nascido', source: 'YouTube - SBP', type: 'video', category: 'babyCare', description: 'Passo a passo para dar banho no bebê com segurança.', url: 'https://www.youtube.com/watch?v=FZbYB-4M6KQ' },
-  { id: 7, title: 'Aleitamento Materno - Guia Completo', source: 'OPAS/OMS', type: 'article', category: 'breastfeeding', description: 'Guia da Organização Mundial da Saúde sobre amamentação.', url: 'https://www.paho.org/pt/topicos/aleitamento-materno' },
-  { id: 8, title: 'Caderneta da Criança', source: 'Ministério da Saúde', type: 'article', category: 'babyCare', description: 'Documento oficial com orientações de saúde do bebê.', url: 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-da-crianca/caderneta-da-crianca' },
-  { id: 9, title: 'Saúde Mental Materna', source: 'Ministério da Saúde', type: 'article', category: 'mentalHealth', description: 'Informações sobre saúde mental no período perinatal.', url: 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-mental' },
-  { id: 10, title: 'Amamentação - Primeiros Passos', source: 'YouTube - UNICEF', type: 'video', category: 'breastfeeding', description: 'Vídeo educativo sobre os primeiros passos da amamentação.', url: 'https://www.youtube.com/watch?v=LD4fgPmVwgY' },
+  { id: 1, title: 'Amamentação - Guia Completo', source: 'Ministério da Saúde', type: 'article', category: 'breastfeeding', description: 'Página oficial com todas as informações sobre amamentação.', url: 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/aleitamento-materno' },
+  { id: 2, title: 'Saúde da Criança', source: 'Ministério da Saúde', type: 'article', category: 'babyCare', description: 'Informações sobre cuidados com a saúde do bebê.', url: 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-da-crianca' },
+  { id: 3, title: 'Como amamentar - Passo a passo', source: 'YouTube - Ministério da Saúde', type: 'video', category: 'breastfeeding', description: 'Vídeo oficial ensinando a técnica correta de amamentação.', url: 'https://www.youtube.com/watch?v=iZ5gPW3bMCE' },
+  { id: 4, title: 'Caderneta da Gestante', source: 'Ministério da Saúde', type: 'article', category: 'motherCare', description: 'Guia completo para acompanhamento da gestação e pós-parto.', url: 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-da-mulher/caderneta-da-gestante' },
+  { id: 5, title: 'CVV - Apoio Emocional', source: 'CVV', type: 'article', category: 'mentalHealth', description: 'Centro de Valorização da Vida - Apoio 24h pelo 188.', url: 'https://cvv.org.br' },
+  { id: 6, title: 'Cuidados com o Recém-Nascido', source: 'YouTube - SBP', type: 'video', category: 'babyCare', description: 'Orientações da Sociedade Brasileira de Pediatria.', url: 'https://www.youtube.com/watch?v=R2YsQqLBc7E' },
+  { id: 7, title: 'Aleitamento Materno - OMS', source: 'OPAS/OMS', type: 'article', category: 'breastfeeding', description: 'Recomendações da Organização Mundial da Saúde.', url: 'https://www.paho.org/pt/topicos/aleitamento-materno' },
+  { id: 8, title: 'Pediatria para Famílias', source: 'Sociedade Brasileira de Pediatria', type: 'article', category: 'babyCare', description: 'Portal com orientações para pais sobre saúde infantil.', url: 'https://www.sbp.com.br/especiais/pediatria-para-familias/' },
+  { id: 9, title: 'Saúde Mental Materna', source: 'Ministério da Saúde', type: 'article', category: 'mentalHealth', description: 'Informações sobre depressão pós-parto e saúde mental.', url: 'https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-mental' },
+  { id: 10, title: 'Agosto Dourado - Amamentação', source: 'YouTube - Gov BR', type: 'video', category: 'breastfeeding', description: 'Campanha oficial sobre a importância da amamentação.', url: 'https://www.youtube.com/watch?v=6Jz0u0kP8xE' },
+  { id: 11, title: 'Rede Brasileira de Bancos de Leite', source: 'Fiocruz', type: 'article', category: 'breastfeeding', description: 'Encontre bancos de leite humano e saiba como doar.', url: 'https://rfrblh.fiocruz.br' },
+  { id: 12, title: 'Direitos da Gestante e Lactante', source: 'Gov.br', type: 'article', category: 'motherCare', description: 'Informações sobre direitos trabalhistas e benefícios.', url: 'https://www.gov.br/pt-br/servicos/obter-salario-maternidade' },
 ];
 
 const categoryConfig = {
@@ -62,3 +64,4 @@ export default function Biblioteca() {
     </div>
   );
 }
+
