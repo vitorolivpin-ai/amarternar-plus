@@ -1,4 +1,5 @@
 import { useState } from 'react';
+
 import {
   Heart,
   Home,
@@ -24,6 +25,7 @@ import Login from './components/Login';
 import Direitos from './components/Direitos';
 import CuidadosInteligentes from './components/CuidadosInteligentes';
 import RetornoTrabalho from './components/RetornoTrabalho';
+import Onboarding from './components/Onboarding';
 
 export default function App() {
   const { user, isLoggedIn, logout, language, toggleLanguage, t } = useStore();
@@ -31,8 +33,40 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('home');
   const [showEmergencias, setShowEmergencias] = useState(false);
 
+  const [profile, setProfile] = useState(() => {
+    try {
+      const savedProfile = localStorage.getItem('amarternar_profile');
+
+      return savedProfile ? JSON.parse(savedProfile) : null;
+    } catch (error) {
+      return null;
+    }
+  });
+
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    try {
+      const savedProfile = localStorage.getItem('amarternar_profile');
+
+      return !savedProfile;
+    } catch (error) {
+      return true;
+    }
+  });
+
   if (!isLoggedIn) {
     return <Login />;
+  }
+
+  if (showOnboarding) {
+    return (
+      <Onboarding
+        onComplete={(newProfile) => {
+          setProfile(newProfile);
+          setShowOnboarding(false);
+          setActiveTab('home');
+        }}
+      />
+    );
   }
 
   const tabs = [
@@ -49,8 +83,10 @@ export default function App() {
       case 'home':
         return (
           <Dashboard
+            profile={profile}
             onNavigate={setActiveTab}
             onEmergencia={() => setShowEmergencias(true)}
+            onEditProfile={() => setShowOnboarding(true)}
           />
         );
 
@@ -78,8 +114,10 @@ export default function App() {
       default:
         return (
           <Dashboard
+            profile={profile}
             onNavigate={setActiveTab}
             onEmergencia={() => setShowEmergencias(true)}
+            onEditProfile={() => setShowOnboarding(true)}
           />
         );
     }
