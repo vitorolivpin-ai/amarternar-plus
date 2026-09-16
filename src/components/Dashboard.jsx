@@ -84,7 +84,7 @@ export default function Dashboard({ onNavigate, onEmergencia }) {
     },
     {
       id: 'retorno',
-      icon: BriefcaseBusiness,
+      icon: Briefcase,
       label: 'Retorno ao Trabalho',
       color: 'from-[#EDE9FE] to-[#D8CFF5]',
       iconColor: 'text-indigo-500',
