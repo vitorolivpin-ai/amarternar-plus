@@ -23,6 +23,7 @@ import Emergencias from './components/Emergencias';
 import Login from './components/Login';
 import Direitos from './components/Direitos';
 import CuidadosInteligentes from './components/CuidadosInteligentes';
+import RetornoTrabalho from './components/RetornoTrabalho';
 
 export default function App() {
   const { user, isLoggedIn, logout, language, toggleLanguage, t } = useStore();
@@ -40,7 +41,7 @@ export default function App() {
     { id: 'tarefas', icon: LayoutGrid, label: 'Tarefas' },
     { id: 'biblioteca', icon: BookOpen, label: t('library') },
     { id: 'direitos', icon: Scale, label: t('rights') },
-    { id: 'ordenha', icon: Droplets, label: t('pumping') },
+    { id: 'ordenha', icon: Droplets, label: 'Diário' },
   ];
 
   const renderContent = () => {
@@ -70,6 +71,9 @@ export default function App() {
 
       case 'cuidados':
         return <CuidadosInteligentes />;
+
+      case 'retorno':
+        return <RetornoTrabalho onNavigate={setActiveTab} />;
 
       default:
         return (
