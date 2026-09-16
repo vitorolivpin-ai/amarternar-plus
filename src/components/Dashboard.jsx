@@ -14,8 +14,14 @@ import {
 
 import { useStore } from '../store';
 
-export default function Dashboard({ onNavigate, onEmergencia }) {
+export default function Dashboard({
+  profile,
+  onNavigate,
+  onEmergencia,
+}) {
   const { user, t, ordenhaRecords, getNextPumpingEstimate } = useStore();
+
+  const displayName = profile?.displayName || user?.name || t('guest');
 
   const lastRecord = ordenhaRecords[0];
   const nextEstimate = getNextPumpingEstimate();
@@ -101,8 +107,23 @@ export default function Dashboard({ onNavigate, onEmergencia }) {
     <div className="p-4 space-y-6">
       <div className="bg-gradient-to-r from-[#FFDAB9]/40 to-[#E6E6FA]/40 rounded-2xl p-5 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-14 h-14 bg-white rounded-full flex items-center justify-center shadow-md">
-            <Baby className="w-8 h-8 text-[#FFCBA4]" />
+          <div className="w-14 h-14 rounded-full overflow-hidden bg-white flex items-center justify-center shadow-md border-2 border-white">
+            {profile?.profilePhoto ? (
+              <img
+                src={profile.profilePhoto}
+                alt={`Foto de ${displayName}`}
+                className="w-full h-full object-cover"
+              />
+            ) : profile?.avatar ? (
+              <span
+                className="text-2xl"
+                aria-label={`Avatar de ${displayName}`}
+              >
+                {profile.avatar}
+              </span>
+            ) : (
+              <Baby className="w-8 h-8 text-[#FFCBA4]" />
+            )}
           </div>
 
           <div>
@@ -111,7 +132,7 @@ export default function Dashboard({ onNavigate, onEmergencia }) {
             </p>
 
             <h2 className="text-2xl font-bold text-gray-800">
-              {user?.name || t('guest')} 💕
+              {displayName} 💕
             </h2>
           </div>
         </div>
