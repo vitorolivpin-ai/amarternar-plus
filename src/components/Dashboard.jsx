@@ -10,7 +10,6 @@ import {
   Heart,
   Scale,
   Sparkles,
-  BriefcaseBusiness,
 } from 'lucide-react';
 
 import { useStore } from '../store';
@@ -84,7 +83,7 @@ export default function Dashboard({ onNavigate, onEmergencia }) {
     },
     {
       id: 'retorno',
-      icon: Briefcase,
+      icon: Heart,
       label: 'Retorno ao Trabalho',
       color: 'from-[#EDE9FE] to-[#D8CFF5]',
       iconColor: 'text-indigo-500',
