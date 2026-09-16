@@ -10,6 +10,7 @@ import {
   Heart,
   Scale,
   Sparkles,
+  BriefcaseBusiness,
 } from 'lucide-react';
 
 import { useStore } from '../store';
@@ -82,9 +83,16 @@ export default function Dashboard({ onNavigate, onEmergencia }) {
       iconColor: 'text-emerald-500',
     },
     {
+      id: 'retorno',
+      icon: BriefcaseBusiness,
+      label: 'Retorno ao Trabalho',
+      color: 'from-[#EDE9FE] to-[#D8CFF5]',
+      iconColor: 'text-indigo-500',
+    },
+    {
       id: 'ordenha',
       icon: Droplets,
-      label: 'Registro de Ordenha',
+      label: 'Diário de Ordenha',
       color: 'from-[#FFF0F5] to-[#FFD6E7]',
       iconColor: 'text-pink-500',
     },
