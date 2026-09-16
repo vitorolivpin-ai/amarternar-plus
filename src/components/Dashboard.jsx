@@ -56,7 +56,7 @@ export default function Dashboard({ onNavigate, onEmergencia }) {
     {
       id: 'tarefas',
       icon: LayoutGrid,
-      label: 'Kanban',
+      label: 'Tarefas',
       color: 'from-[#E6E6FA] to-[#DCD0FF]',
       iconColor: 'text-purple-400',
     },
