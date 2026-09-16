@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
+
 import {
-  BriefcaseBusiness,
+  Briefcase,
   Check,
   ChevronDown,
   ChevronUp,
@@ -16,7 +17,8 @@ const steps = [
   {
     id: 'direitos',
     title: 'Conheça seus direitos',
-    description: 'Veja informações importantes para conciliar trabalho e amamentação.',
+    description:
+      'Veja informações importantes para conciliar trabalho e amamentação.',
     icon: Scale,
     iconColor: 'text-indigo-500',
     bgColor: 'from-[#EDE9FE] to-[#DDD6FE]',
@@ -31,7 +33,8 @@ const steps = [
   {
     id: 'ordenha',
     title: 'Prepare a ordenha',
-    description: 'Organize os itens e os horários para a retirada e o armazenamento do leite.',
+    description:
+      'Organize os itens e os horários para a retirada e o armazenamento do leite.',
     icon: Droplets,
     iconColor: 'text-pink-500',
     bgColor: 'from-[#FFF0F5] to-[#FFD6E7]',
@@ -46,7 +49,8 @@ const steps = [
   {
     id: 'rotina',
     title: 'Organize sua rotina',
-    description: 'Planeje o dia com apoio da família, cuidador ou rede de confiança.',
+    description:
+      'Planeje o dia com apoio da família, cuidador ou rede de confiança.',
     icon: Users,
     iconColor: 'text-emerald-500',
     bgColor: 'from-[#E4F8F1] to-[#C8EFE4]',
@@ -61,7 +65,8 @@ const steps = [
   {
     id: 'plano',
     title: 'Monte seu plano semanal',
-    description: 'Acompanhe tarefas simples para se preparar com tranquilidade.',
+    description:
+      'Acompanhe tarefas simples para se preparar com tranquilidade.',
     icon: ClipboardCheck,
     iconColor: 'text-amber-500',
     bgColor: 'from-[#FFF4D8] to-[#FFE4B5]',
@@ -111,7 +116,7 @@ export default function RetornoTrabalho({ onNavigate }) {
       <section className="bg-gradient-to-br from-[#B8A9C9] to-[#DCD0FF] rounded-3xl p-6 text-white shadow-sm">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center">
-            <BriefcaseBusiness className="w-7 h-7" />
+            <Briefcase className="w-7 h-7" />
           </div>
 
           <div>
@@ -255,6 +260,7 @@ export default function RetornoTrabalho({ onNavigate }) {
                             className="flex items-start gap-2 text-sm leading-5 text-gray-700"
                           >
                             <span className="mt-1.5 w-2 h-2 shrink-0 rounded-full bg-[#B8A9C9]" />
+
                             <span>{tip}</span>
                           </li>
                         ))}
