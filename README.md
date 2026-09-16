@@ -1,6 +1,6 @@
 # AMARternar+ 💕
 
-> Plataforma completa de apoio à amamentação com foco em acessibilidade e informação de qualidade.
+> O AMARternar+ é um aplicativo de apoio informativo e de organização da rotina para lactantes, com foco na amamentação e no retorno ao trabalho.
 
 ## Sobre o Projeto
 
