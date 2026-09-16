@@ -26,6 +26,7 @@ import Direitos from './components/Direitos';
 import CuidadosInteligentes from './components/CuidadosInteligentes';
 import RetornoTrabalho from './components/RetornoTrabalho';
 import Onboarding from './components/Onboarding';
+import Perfil from './components/Perfil';
 
 export default function App() {
   const { user, isLoggedIn, logout, language, toggleLanguage, t } = useStore();
@@ -53,6 +54,27 @@ export default function App() {
     }
   });
 
+  function handleProfileSave(updatedProfile) {
+    try {
+      localStorage.setItem(
+        'amarternar_profile',
+        JSON.stringify(updatedProfile)
+      );
+
+      setProfile(updatedProfile);
+    } catch (error) {
+      setProfile(updatedProfile);
+    }
+  }
+
+  function openProfile() {
+    setActiveTab('perfil');
+  }
+
+  function openRoutineEditor() {
+    setShowOnboarding(true);
+  }
+
   if (!isLoggedIn) {
     return <Login />;
   }
@@ -61,7 +83,7 @@ export default function App() {
     return (
       <Onboarding
         onComplete={(newProfile) => {
-          setProfile(newProfile);
+          handleProfileSave(newProfile);
           setShowOnboarding(false);
           setActiveTab('home');
         }}
@@ -86,7 +108,7 @@ export default function App() {
             profile={profile}
             onNavigate={setActiveTab}
             onEmergencia={() => setShowEmergencias(true)}
-            onEditProfile={() => setShowOnboarding(true)}
+            onEditProfile={openRoutineEditor}
           />
         );
 
@@ -111,17 +133,28 @@ export default function App() {
       case 'retorno':
         return <RetornoTrabalho onNavigate={setActiveTab} />;
 
+      case 'perfil':
+        return (
+          <Perfil
+            profile={profile}
+            onSave={handleProfileSave}
+            onEditRoutine={openRoutineEditor}
+          />
+        );
+
       default:
         return (
           <Dashboard
             profile={profile}
             onNavigate={setActiveTab}
             onEmergencia={() => setShowEmergencias(true)}
-            onEditProfile={() => setShowOnboarding(true)}
+            onEditProfile={openRoutineEditor}
           />
         );
     }
   };
+
+  const displayName = profile?.displayName || user?.name || t('guest');
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#FFF5EE] to-[#F5F0FF] flex flex-col">
@@ -129,6 +162,7 @@ export default function App() {
         <div className="flex items-center gap-2">
           <div className="relative">
             <Heart className="w-8 h-8 text-[#FFCBA4] fill-[#FFCBA4]" />
+
             <Droplets className="w-4 h-4 text-[#DCD0FF] absolute -bottom-1 -right-1" />
           </div>
 
@@ -152,13 +186,33 @@ export default function App() {
             <Globe className="w-5 h-5 text-[#B8A9C9]" />
           </button>
 
-          <div className="flex items-center gap-2 px-3 py-1.5 bg-[#E6E6FA]/30 rounded-full">
-            <User className="w-4 h-4 text-[#B8A9C9]" />
-
-            <span className="text-sm text-gray-700 font-medium">
-              {user?.name || t('guest')}
+          <button
+            type="button"
+            onClick={openProfile}
+            className="flex items-center gap-2 max-w-[150px] px-3 py-1.5 bg-[#E6E6FA]/30 rounded-full hover:bg-[#E6E6FA]/60 transition-colors"
+            aria-label="Abrir meu perfil"
+            title="Abrir meu perfil"
+          >
+            <span className="w-6 h-6 shrink-0 rounded-full overflow-hidden bg-white flex items-center justify-center">
+              {profile?.profilePhoto ? (
+                <img
+                  src={profile.profilePhoto}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              ) : profile?.avatar ? (
+                <span className="text-sm" aria-hidden="true">
+                  {profile.avatar}
+                </span>
+              ) : (
+                <User className="w-4 h-4 text-[#B8A9C9]" />
+              )}
             </span>
-          </div>
+
+            <span className="text-sm text-gray-700 font-medium truncate">
+              {displayName}
+            </span>
+          </button>
 
           <button
             type="button"
