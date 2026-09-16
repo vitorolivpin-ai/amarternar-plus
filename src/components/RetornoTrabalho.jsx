@@ -5,9 +5,8 @@ import {
   Check,
   ChevronDown,
   ChevronUp,
-  ClipboardCheck,
   Droplets,
-  HeartHandshake,
+  Heart,
   Scale,
   Sparkles,
   Users,
@@ -67,7 +66,7 @@ const steps = [
     title: 'Monte seu plano semanal',
     description:
       'Acompanhe tarefas simples para se preparar com tranquilidade.',
-    icon: ClipboardCheck,
+    icon: Check,
     iconColor: 'text-amber-500',
     bgColor: 'from-[#FFF4D8] to-[#FFE4B5]',
     tips: [
@@ -111,6 +110,12 @@ export default function RetornoTrabalho({ onNavigate }) {
     setOpenStep((previous) => (previous === id ? null : id));
   }
 
+  function navigate(destination) {
+    if (typeof onNavigate === 'function') {
+      onNavigate(destination);
+    }
+  }
+
   return (
     <div className="p-4 pb-28 max-w-3xl mx-auto space-y-5">
       <section className="bg-gradient-to-br from-[#B8A9C9] to-[#DCD0FF] rounded-3xl p-6 text-white shadow-sm">
@@ -140,7 +145,7 @@ export default function RetornoTrabalho({ onNavigate }) {
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-[#B8A9C9]" />
+              <Heart className="w-5 h-5 text-[#B8A9C9]" />
 
               <h2 className="font-bold text-gray-800">
                 Minha preparação
@@ -202,7 +207,7 @@ export default function RetornoTrabalho({ onNavigate }) {
 
       <section>
         <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-          <HeartHandshake className="w-5 h-5 text-[#FFCBA4]" />
+          <Heart className="w-5 h-5 text-[#FFCBA4]" />
           Passos importantes
         </h2>
 
@@ -260,7 +265,6 @@ export default function RetornoTrabalho({ onNavigate }) {
                             className="flex items-start gap-2 text-sm leading-5 text-gray-700"
                           >
                             <span className="mt-1.5 w-2 h-2 shrink-0 rounded-full bg-[#B8A9C9]" />
-
                             <span>{tip}</span>
                           </li>
                         ))}
@@ -268,7 +272,7 @@ export default function RetornoTrabalho({ onNavigate }) {
 
                       <button
                         type="button"
-                        onClick={() => onNavigate(step.navigateTo)}
+                        onClick={() => navigate(step.navigateTo)}
                         className="mt-4 w-full rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm hover:bg-[#FFF5EE] transition-colors"
                       >
                         {step.actionLabel}
