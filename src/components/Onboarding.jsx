@@ -189,6 +189,7 @@ export default function Onboarding({
 
   const [answers, setAnswers] = useState(initialAnswers);
   const [stepIndex, setStepIndex] = useState(0);
+
   const [acceptedPrivacy, setAcceptedPrivacy] = useState(
     Boolean(profile?.privacyConsent?.accepted)
   );
@@ -209,7 +210,6 @@ export default function Onboarding({
 
   const isPrivacyStep = stepIndex === visibleQuestions.length;
   const totalSteps = visibleQuestions.length + 1;
-
   const currentQuestion = visibleQuestions[stepIndex];
 
   const progress = Math.round(
@@ -225,7 +225,9 @@ export default function Onboarding({
 
   function buildUpdatedProfile() {
     return {
-      ...profile,
+      profile: {
+        ...profile?.profile,
+      },
 
       routine: {
         ...profile?.routine,
@@ -239,6 +241,12 @@ export default function Onboarding({
             : true,
       },
 
+      onboarding: {
+        ...profile?.onboarding,
+        routineCompleted: true,
+        showSuggestions: true,
+      },
+
       privacyConsent: {
         accepted: true,
         acceptedAt:
@@ -246,8 +254,6 @@ export default function Onboarding({
           new Date().toISOString(),
         policyVersion: privacyPolicyVersion,
       },
-
-      onboardingCompleted: true,
     };
   }
 
@@ -256,9 +262,7 @@ export default function Onboarding({
       return;
     }
 
-    const updatedProfile = buildUpdatedProfile();
-
-    onComplete(updatedProfile);
+    onComplete(buildUpdatedProfile());
   }
 
   function goNext() {
