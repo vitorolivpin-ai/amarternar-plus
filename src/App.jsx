@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 
 import { useStore } from './store';
+import { supabase } from './supabaseClient';
 
 import Biblioteca from './components/Biblioteca';
 import CuidadosInteligentes from './components/CuidadosInteligentes';
@@ -371,7 +372,17 @@ export default function App() {
     setActiveTab('perfil');
   }
 
-  function handleLogout() {
+  async function signOutFromSupabase() {
+    try {
+      if (supabase) await supabase.auth.signOut();
+    } catch (error) {
+      // Continua a limpeza local mesmo se houver falha de conexão.
+    }
+  }
+
+  async function handleLogout() {
+    await signOutFromSupabase();
+
     logout();
 
     localStorage.removeItem('amarternar_profile');
@@ -424,7 +435,9 @@ export default function App() {
     setActiveTab(tab);
   }
 
-  function handleDeleteAllData() {
+  async function handleDeleteAllData() {
+    await signOutFromSupabase();
+
     localStorage.removeItem('amarternar-storage');
     localStorage.removeItem('amarternar_profile');
 
