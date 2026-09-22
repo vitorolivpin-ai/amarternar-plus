@@ -33,25 +33,98 @@ import RetornoTrabalho from './components/RetornoTrabalho';
 import Onboarding from './components/Onboarding';
 import Perfil from './components/Perfil';
 
-function Suggestions({ profile, onContinue, onNavigate }) {
+function Suggestions({ profile, onContinue, onNavigate, language }) {
   const routine = profile?.routine || {};
+  const isEnglish = language === 'en';
+
+  const text = isEnglish
+    ? {
+        routine: 'PERSONALIZED ROUTINE',
+        title: 'Suggestions for you',
+        introduction:
+          'Based on your routine, we selected a few paths to help you start using AMARternar+.',
+        pumpingTitle: 'Start with the Pumping Diary',
+        pumpingDescription:
+          'Record times, duration, and quantity to follow your routine in a practical way.',
+        tasksTitle: 'Organize your tasks',
+        tasksDescription:
+          'Use the tasks area to create reminders and keep track of important daily activities.',
+        workTitle: 'Prepare your return to work',
+        workDescription:
+          'Check the checklist, guidance, and information that can help you organize this phase.',
+        scheduleTitle: 'Plan your routine for different schedules',
+        scheduleDescription:
+          'Organize tasks and pumping records according to the times that work best for you.',
+        daycareTitle: 'Organize the routine with daycare',
+        daycareDescription:
+          'Use tasks to remember items, schedules, and important information for the person caring for the baby.',
+        focusWorkTitle: 'Your focus is returning to work',
+        focusWorkDescription:
+          'Start with the return-to-work guide and adapt the checklist to your reality.',
+        rightsTitle: 'Learn about your rights as a nursing mother',
+        rightsDescription:
+          'Access guidance about work rights, benefits, and priority service.',
+        mapTitle: 'Find support near you',
+        mapDescription:
+          'Use the map to locate hospitals, health centers, milk banks, and other support services.',
+        careTitle: 'Take a moment for your care',
+        careDescription:
+          'See checklists and organization suggestions to support you and your baby.',
+        panelButton: 'Go to my dashboard',
+        footer:
+          'You can change your routine and update these suggestions whenever you want in your profile.',
+      }
+    : {
+        routine: 'ROTINA PERSONALIZADA',
+        title: 'Sugestões para você',
+        introduction:
+          'Com base nas informações da sua rotina, separamos alguns caminhos para você começar a usar o AMARternar+.',
+        pumpingTitle: 'Comece pelo Diário de Ordenha',
+        pumpingDescription:
+          'Registre horários, duração e quantidade para acompanhar sua rotina de forma prática.',
+        tasksTitle: 'Organize suas tarefas',
+        tasksDescription:
+          'Use a área de tarefas para criar lembretes e acompanhar as atividades importantes do dia.',
+        workTitle: 'Prepare seu retorno ao trabalho',
+        workDescription:
+          'Confira o checklist, orientações e informações que podem ajudar na organização dessa fase.',
+        scheduleTitle: 'Planeje sua rotina para horários diferentes',
+        scheduleDescription:
+          'Organize tarefas e registros de ordenha de acordo com os horários que funcionam melhor para você.',
+        daycareTitle: 'Organize a rotina com a creche',
+        daycareDescription:
+          'Use as tarefas para lembrar itens, horários e informações importantes para quem cuida do bebê.',
+        focusWorkTitle: 'Seu foco é o retorno ao trabalho',
+        focusWorkDescription:
+          'Comece pelo guia de retorno ao trabalho e adapte o checklist à sua realidade.',
+        rightsTitle: 'Conheça seus direitos como lactante',
+        rightsDescription:
+          'Acesse orientações sobre direitos trabalhistas, benefícios e atendimento prioritário.',
+        mapTitle: 'Encontre apoio perto de você',
+        mapDescription:
+          'Use o mapa para localizar hospitais, UBS, bancos de leite e outros serviços de apoio.',
+        careTitle: 'Reserve um momento para seus cuidados',
+        careDescription:
+          'Veja checklists e sugestões de organização para apoiar você e o bebê.',
+        panelButton: 'Ir para meu painel',
+        footer:
+          'Você poderá alterar sua rotina e atualizar estas sugestões quando quiser no seu perfil.',
+      };
 
   const suggestions = [
     {
       id: 'diario',
       icon: Droplets,
-      title: 'Comece pelo Diário de Ordenha',
-      description:
-        'Registre horários, duração e quantidade para acompanhar sua rotina de forma prática.',
+      title: text.pumpingTitle,
+      description: text.pumpingDescription,
       tab: 'ordenha',
       color: 'bg-[#E8F6FF] text-[#62A6C8]',
     },
     {
       id: 'tarefas',
       icon: ClipboardList,
-      title: 'Organize suas tarefas',
-      description:
-        'Use a área de tarefas para criar lembretes e acompanhar as atividades importantes do dia.',
+      title: text.tasksTitle,
+      description: text.tasksDescription,
       tab: 'tarefas',
       color: 'bg-[#FFF3E8] text-[#EAA76A]',
     },
@@ -61,9 +134,8 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     suggestions.unshift({
       id: 'retorno',
       icon: Briefcase,
-      title: 'Prepare seu retorno ao trabalho',
-      description:
-        'Confira o checklist, orientações e informações que podem ajudar na organização dessa fase.',
+      title: text.workTitle,
+      description: text.workDescription,
       tab: 'retorno',
       color: 'bg-[#F0ECFF] text-[#8D7AB8]',
     });
@@ -73,9 +145,8 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     suggestions.push({
       id: 'turno',
       icon: Calendar,
-      title: 'Planeje sua rotina para horários diferentes',
-      description:
-        'Organize tarefas e registros de ordenha de acordo com os horários que funcionam melhor para você.',
+      title: text.scheduleTitle,
+      description: text.scheduleDescription,
       tab: 'tarefas',
       color: 'bg-[#FCEEF5] text-[#C8789E]',
     });
@@ -85,9 +156,8 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     suggestions.push({
       id: 'creche',
       icon: Calendar,
-      title: 'Organize a rotina com a creche',
-      description:
-        'Use as tarefas para lembrar itens, horários e informações importantes para quem cuida do bebê.',
+      title: text.daycareTitle,
+      description: text.daycareDescription,
       tab: 'tarefas',
       color: 'bg-[#EEF8EF] text-[#6B9E73]',
     });
@@ -97,9 +167,8 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     suggestions.unshift({
       id: 'prioridade-retorno',
       icon: Briefcase,
-      title: 'Seu foco é o retorno ao trabalho',
-      description:
-        'Comece pelo guia de retorno ao trabalho e adapte o checklist à sua realidade.',
+      title: text.focusWorkTitle,
+      description: text.focusWorkDescription,
       tab: 'retorno',
       color: 'bg-[#F0ECFF] text-[#8D7AB8]',
     });
@@ -109,9 +178,8 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     suggestions.unshift({
       id: 'prioridade-direitos',
       icon: Scale,
-      title: 'Conheça seus direitos como lactante',
-      description:
-        'Acesse orientações sobre direitos trabalhistas, benefícios e atendimento prioritário.',
+      title: text.rightsTitle,
+      description: text.rightsDescription,
       tab: 'direitos',
       color: 'bg-[#FFF6DB] text-[#B79036]',
     });
@@ -121,9 +189,8 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     suggestions.unshift({
       id: 'prioridade-mapa',
       icon: MapPin,
-      title: 'Encontre apoio perto de você',
-      description:
-        'Use o mapa para localizar hospitais, UBS, bancos de leite e outros serviços de apoio.',
+      title: text.mapTitle,
+      description: text.mapDescription,
       tab: 'mapa',
       color: 'bg-[#EEF8EF] text-[#6B9E73]',
     });
@@ -133,9 +200,8 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     suggestions.unshift({
       id: 'prioridade-cuidados',
       icon: Heart,
-      title: 'Reserve um momento para seus cuidados',
-      description:
-        'Veja checklists e sugestões de organização para apoiar você e o bebê.',
+      title: text.careTitle,
+      description: text.careDescription,
       tab: 'cuidados',
       color: 'bg-[#FCEEF5] text-[#C8789E]',
     });
@@ -155,18 +221,17 @@ function Suggestions({ profile, onContinue, onNavigate }) {
           </div>
 
           <p className="text-sm font-semibold text-[#B8A9C9]">
-            ROTINA PERSONALIZADA
+            {text.routine}
           </p>
 
           <h1 className="mt-2 text-2xl font-bold text-slate-800">
-            {`Sugestões para você${
+            {`${text.title}${
               profile?.displayName ? `, ${profile.displayName}` : ''
             }`}
           </h1>
 
           <p className="mt-3 leading-6 text-slate-600">
-            Com base nas informações da sua rotina, separamos alguns caminhos
-            para você começar a usar o AMARternar+.
+            {text.introduction}
           </p>
 
           <div className="mt-6 space-y-3">
@@ -207,13 +272,12 @@ function Suggestions({ profile, onContinue, onNavigate }) {
             onClick={() => onContinue('home')}
             className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#B8A9C9] px-4 py-4 font-semibold text-white transition hover:bg-[#A194B4]"
           >
-            Ir para meu painel
+            {text.panelButton}
             <ArrowRight className="h-5 w-5" />
           </button>
 
           <p className="mt-4 text-center text-xs leading-5 text-slate-500">
-            Você poderá alterar sua rotina e atualizar estas sugestões quando
-            quiser no seu perfil.
+            {text.footer}
           </p>
         </div>
       </section>
@@ -339,6 +403,7 @@ export default function App() {
         profile={profile}
         onContinue={handleFinishSuggestions}
         onNavigate={handleSuggestionsNavigate}
+        language={language}
       />
     );
   }
@@ -346,10 +411,10 @@ export default function App() {
   const tabs = [
     { id: 'home', icon: Home, label: t('home') },
     { id: 'mapa', icon: MapPin, label: t('map') },
-    { id: 'tarefas', icon: LayoutGrid, label: 'Tarefas' },
+    { id: 'tarefas', icon: LayoutGrid, label: t('tasks') },
     { id: 'biblioteca', icon: BookOpen, label: t('library') },
     { id: 'direitos', icon: Scale, label: t('rights') },
-    { id: 'ordenha', icon: Droplets, label: 'Diário' },
+    { id: 'ordenha', icon: Droplets, label: t('diary') },
   ];
 
   const renderContent = () => {
