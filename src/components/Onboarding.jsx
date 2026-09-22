@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import {
   Check,
@@ -160,9 +160,33 @@ const questions = [
   },
 ];
 
-export default function Onboarding({ onComplete }) {
-  const [answers, setAnswers] = useState({});
+export default function Onboarding({
+  profile,
+  onComplete,
+  onCancel,
+}) {
+  const initialAnswers = useMemo(() => {
+    const savedRoutine = profile?.routine || {};
+
+    return {
+      workType: savedRoutine.workType || '',
+      schedule: savedRoutine.schedule || '',
+      babyCare: savedRoutine.babyCare || '',
+      priority: savedRoutine.priority || '',
+      wantsTutorial:
+        typeof savedRoutine.wantsTutorial === 'boolean'
+          ? savedRoutine.wantsTutorial
+          : undefined,
+    };
+  }, [profile]);
+
+  const [answers, setAnswers] = useState(initialAnswers);
   const [stepIndex, setStepIndex] = useState(0);
+
+  useEffect(() => {
+    setAnswers(initialAnswers);
+    setStepIndex(0);
+  }, [initialAnswers]);
 
   const visibleQuestions = questions.filter((question) => {
     if (!question.showWhen) {
@@ -186,18 +210,30 @@ export default function Onboarding({ onComplete }) {
     }));
   }
 
-  function finishOnboarding() {
-    const profile = {
-      ...answers,
+  function buildUpdatedProfile() {
+    return {
+      ...profile,
+
+      routine: {
+        ...profile?.routine,
+        workType: answers.workType || '',
+        schedule: answers.schedule || '',
+        babyCare: answers.babyCare || '',
+        priority: answers.priority || 'cuidados',
+        wantsTutorial:
+          typeof answers.wantsTutorial === 'boolean'
+            ? answers.wantsTutorial
+            : true,
+      },
+
       onboardingCompleted: true,
     };
+  }
 
-    localStorage.setItem(
-      'amarternar_profile',
-      JSON.stringify(profile)
-    );
+  function finishOnboarding() {
+    const updatedProfile = buildUpdatedProfile();
 
-    onComplete(profile);
+    onComplete(updatedProfile);
   }
 
   function goNext() {
@@ -216,36 +252,37 @@ export default function Onboarding({ onComplete }) {
   }
 
   function skipOnboarding() {
-    const profile = {
+    const updatedProfile = {
+      ...profile,
+
+      routine: {
+        ...profile?.routine,
+        priority: profile?.routine?.priority || 'cuidados',
+        wantsTutorial: true,
+      },
+
       onboardingCompleted: true,
-      priority: 'cuidados',
-      wantsTutorial: true,
     };
 
-    localStorage.setItem(
-      'amarternar_profile',
-      JSON.stringify(profile)
-    );
-
-    onComplete(profile);
+    onComplete(updatedProfile);
   }
 
   const hasSelectedOption =
-    answers[currentQuestion?.id] !== undefined;
+    currentQuestion &&
+    answers[currentQuestion.id] !== undefined &&
+    answers[currentQuestion.id] !== '';
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFF5EE] to-[#F5F0FF] flex items-center justify-center p-4">
-      <main className="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#FFF5EE] to-[#F5F0FF] p-4">
+      <main className="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-xl">
         <header className="bg-gradient-to-r from-[#FFCBA4] to-[#B8A9C9] p-6 text-white">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
-              <Heart className="w-6 h-6 fill-white" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
+              <Heart className="h-6 w-6 fill-white" />
             </div>
 
             <div>
-              <p className="text-sm text-white/80">
-                AMARternar+
-              </p>
+              <p className="text-sm text-white/80">AMARternar+</p>
 
               <h1 className="text-xl font-bold">
                 Vamos organizar sua rotina?
@@ -259,7 +296,7 @@ export default function Onboarding({ onComplete }) {
           </p>
 
           <div className="mt-5">
-            <div className="flex justify-between text-xs text-white/80 mb-2">
+            <div className="mb-2 flex justify-between text-xs text-white/80">
               <span>
                 Etapa {stepIndex + 1} de {totalSteps}
               </span>
@@ -267,9 +304,9 @@ export default function Onboarding({ onComplete }) {
               <span>{progress}%</span>
             </div>
 
-            <div className="h-2 bg-white/30 rounded-full overflow-hidden">
+            <div className="h-2 overflow-hidden rounded-full bg-white/30">
               <div
-                className="h-full bg-white rounded-full transition-all duration-300"
+                className="h-full rounded-full bg-white transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
@@ -278,15 +315,15 @@ export default function Onboarding({ onComplete }) {
 
         <section className="p-6">
           <h2 className="text-xl font-bold text-gray-800">
-            {currentQuestion.title}
+            {currentQuestion?.title}
           </h2>
 
           <p className="mt-2 text-sm leading-5 text-gray-500">
-            {currentQuestion.subtitle}
+            {currentQuestion?.subtitle}
           </p>
 
           <div className="mt-5 space-y-3">
-            {currentQuestion.options.map((option) => {
+            {currentQuestion?.options.map((option) => {
               const isSelected =
                 answers[currentQuestion.id] === option.value;
 
@@ -295,20 +332,20 @@ export default function Onboarding({ onComplete }) {
                   key={String(option.value)}
                   type="button"
                   onClick={() => selectOption(option.value)}
-                  className={`w-full flex items-center gap-3 rounded-xl border-2 p-4 text-left transition-all ${
+                  className={`flex w-full items-center gap-3 rounded-xl border-2 p-4 text-left transition-all ${
                     isSelected
                       ? 'border-[#B8A9C9] bg-[#F5F0FF]'
                       : 'border-[#F1EEFA] bg-white hover:bg-[#FFF5EE]'
                   }`}
                 >
                   <span
-                    className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
                       isSelected
                         ? 'border-[#B8A9C9] bg-[#B8A9C9] text-white'
                         : 'border-gray-300 text-transparent'
                     }`}
                   >
-                    <Check className="w-4 h-4" strokeWidth={3} />
+                    <Check className="h-4 w-4" strokeWidth={3} />
                   </span>
 
                   <span className="text-sm font-medium text-gray-700">
@@ -324,10 +361,10 @@ export default function Onboarding({ onComplete }) {
               <button
                 type="button"
                 onClick={goBack}
-                className="w-12 h-12 rounded-xl border border-[#E6E6FA] flex items-center justify-center text-[#8B7BA8] hover:bg-[#F5F0FF] transition-colors"
+                className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#E6E6FA] text-[#8B7BA8] transition-colors hover:bg-[#F5F0FF]"
                 aria-label="Voltar"
               >
-                <ChevronLeft className="w-5 h-5" />
+                <ChevronLeft className="h-5 w-5" />
               </button>
             )}
 
@@ -338,22 +375,32 @@ export default function Onboarding({ onComplete }) {
               className={`flex-1 rounded-xl py-3.5 font-bold transition-colors ${
                 hasSelectedOption
                   ? 'bg-gradient-to-r from-[#FFCBA4] to-[#B8A9C9] text-white shadow-md hover:shadow-lg'
-                  : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                  : 'cursor-not-allowed bg-gray-100 text-gray-400'
               }`}
             >
               {stepIndex === visibleQuestions.length - 1
-                ? 'Ver meu aplicativo'
+                ? 'Ver minhas sugestões'
                 : 'Continuar'}
             </button>
           </div>
 
-          <button
-            type="button"
-            onClick={skipOnboarding}
-            className="mt-4 w-full text-sm text-[#8B7BA8] hover:underline"
-          >
-            Pular por enquanto
-          </button>
+          {onCancel ? (
+            <button
+              type="button"
+              onClick={onCancel}
+              className="mt-4 w-full text-sm text-[#8B7BA8] hover:underline"
+            >
+              Cancelar alteração
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={skipOnboarding}
+              className="mt-4 w-full text-sm text-[#8B7BA8] hover:underline"
+            >
+              Pular por enquanto
+            </button>
+          )}
         </section>
       </main>
     </div>
