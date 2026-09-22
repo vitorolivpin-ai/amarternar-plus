@@ -8,98 +8,101 @@ import {
   Droplets,
   Heart,
   Scale,
-  Sparkles,
   Users,
 } from 'lucide-react';
+
+import { useStore } from '../store';
 
 const steps = [
   {
     id: 'direitos',
-    title: 'Conheça seus direitos',
-    description:
-      'Veja informações importantes para conciliar trabalho e amamentação.',
+    titleKey: 'returnStepRightsTitle',
+    descriptionKey: 'returnStepRightsDescription',
     icon: Scale,
     iconColor: 'text-indigo-500',
     bgColor: 'from-[#EDE9FE] to-[#DDD6FE]',
-    tips: [
-      'Em geral, a CLT prevê dois descansos especiais de 30 minutos para amamentar durante a jornada, até o bebê completar 6 meses.',
-      'Converse com a empresa sobre horários, pausas e possibilidades de apoio.',
-      'Em caso de dúvida, consulte os canais oficiais, RH, sindicato ou orientação jurídica.',
+    tipKeys: [
+      'returnStepRightsTip1',
+      'returnStepRightsTip2',
+      'returnStepRightsTip3',
     ],
-    actionLabel: 'Ver direitos da lactante',
+    actionLabelKey: 'returnStepRightsAction',
     navigateTo: 'direitos',
   },
   {
     id: 'ordenha',
-    title: 'Prepare a ordenha',
-    description:
-      'Organize os itens e os horários para a retirada e o armazenamento do leite.',
+    titleKey: 'returnStepPumpingTitle',
+    descriptionKey: 'returnStepPumpingDescription',
     icon: Droplets,
     iconColor: 'text-pink-500',
     bgColor: 'from-[#FFF0F5] to-[#FFD6E7]',
-    tips: [
-      'Comece a se preparar com antecedência para conhecer a rotina que funciona para você.',
-      'Separe recipientes adequados, identificados com data e horário da coleta.',
-      'Use o Diário de Ordenha para acompanhar horários, duração e quantidade.',
+    tipKeys: [
+      'returnStepPumpingTip1',
+      'returnStepPumpingTip2',
+      'returnStepPumpingTip3',
     ],
-    actionLabel: 'Abrir Diário de Ordenha',
+    actionLabelKey: 'returnStepPumpingAction',
     navigateTo: 'ordenha',
   },
   {
     id: 'rotina',
-    title: 'Organize sua rotina',
-    description:
-      'Planeje o dia com apoio da família, cuidador ou rede de confiança.',
+    titleKey: 'returnStepRoutineTitle',
+    descriptionKey: 'returnStepRoutineDescription',
     icon: Users,
     iconColor: 'text-emerald-500',
     bgColor: 'from-[#E4F8F1] to-[#C8EFE4]',
-    tips: [
-      'Converse com quem ficará com o bebê sobre horários e formas de oferecer o leite.',
-      'Planeje o deslocamento e deixe os itens necessários separados no dia anterior.',
-      'Inclua momentos possíveis de descanso, hidratação e apoio emocional.',
+    tipKeys: [
+      'returnStepRoutineTip1',
+      'returnStepRoutineTip2',
+      'returnStepRoutineTip3',
     ],
-    actionLabel: 'Ver cuidados inteligentes',
+    actionLabelKey: 'returnStepRoutineAction',
     navigateTo: 'cuidados',
   },
   {
     id: 'plano',
-    title: 'Monte seu plano semanal',
-    description:
-      'Acompanhe tarefas simples para se preparar com tranquilidade.',
+    titleKey: 'returnStepPlanTitle',
+    descriptionKey: 'returnStepPlanDescription',
     icon: Check,
     iconColor: 'text-amber-500',
     bgColor: 'from-[#FFF4D8] to-[#FFE4B5]',
-    tips: [
-      'Escolha apenas as tarefas que fazem sentido para sua realidade.',
-      'Conclua uma etapa por vez: você não precisa fazer tudo no mesmo dia.',
-      'Acompanhe o percentual de preparação na tela de Tarefas.',
+    tipKeys: [
+      'returnStepPlanTip1',
+      'returnStepPlanTip2',
+      'returnStepPlanTip3',
     ],
-    actionLabel: 'Abrir tarefas semanais',
+    actionLabelKey: 'returnStepPlanAction',
     navigateTo: 'tarefas',
   },
 ];
 
-const preparationTasks = [
-  'Conhecer meus direitos como lactante.',
-  'Conversar sobre pausas e apoio no trabalho.',
-  'Separar recipientes para armazenar o leite.',
-  'Planejar horários possíveis para ordenha.',
-  'Conversar com a rede de apoio ou cuidador.',
-  'Organizar a bolsa e os itens para o retorno.',
+const preparationTaskKeys = [
+  'returnTask1',
+  'returnTask2',
+  'returnTask3',
+  'returnTask4',
+  'returnTask5',
+  'returnTask6',
 ];
 
 export default function RetornoTrabalho({ onNavigate }) {
+  const t = useStore((state) => state.t);
+
   const [completed, setCompleted] = useState([]);
   const [openStep, setOpenStep] = useState('direitos');
 
   const progress = useMemo(() => {
-    return Math.round((completed.length / preparationTasks.length) * 100);
+    return Math.round(
+      (completed.length / preparationTaskKeys.length) * 100
+    );
   }, [completed]);
 
   function toggleTask(index) {
     setCompleted((previous) => {
       if (previous.includes(index)) {
-        return previous.filter((taskIndex) => taskIndex !== index);
+        return previous.filter(
+          (taskIndex) => taskIndex !== index
+        );
       }
 
       return [...previous, index];
@@ -107,7 +110,9 @@ export default function RetornoTrabalho({ onNavigate }) {
   }
 
   function toggleStep(id) {
-    setOpenStep((previous) => (previous === id ? null : id));
+    setOpenStep((previous) => (
+      previous === id ? null : id
+    ));
   }
 
   function navigate(destination) {
@@ -117,43 +122,44 @@ export default function RetornoTrabalho({ onNavigate }) {
   }
 
   return (
-    <div className="p-4 pb-28 max-w-3xl mx-auto space-y-5">
-      <section className="bg-gradient-to-br from-[#B8A9C9] to-[#DCD0FF] rounded-3xl p-6 text-white shadow-sm">
+    <div className="mx-auto max-w-3xl space-y-5 p-4 pb-28">
+      <section className="rounded-3xl bg-gradient-to-br from-[#B8A9C9] to-[#DCD0FF] p-6 text-white shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-white/20 flex items-center justify-center">
-            <Briefcase className="w-7 h-7" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20">
+            <Briefcase className="h-7 w-7" />
           </div>
 
           <div>
             <p className="text-sm text-white/80">
-              Preparação com passos simples
+              {t('returnHeaderEyebrow')}
             </p>
 
             <h1 className="text-2xl font-bold">
-              Retorno ao Trabalho
+              {t('returnToWork')}
             </h1>
           </div>
         </div>
 
         <p className="mt-4 text-sm leading-6 text-white/90">
-          Organize sua rotina, conheça seus direitos e prepare a continuidade
-          da amamentação de acordo com a sua realidade.
+          {t('returnHeaderDescription')}
         </p>
       </section>
 
-      <section className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6E6FA]/50">
+      <section className="rounded-2xl border border-[#E6E6FA]/50 bg-white p-5 shadow-sm">
         <div className="flex items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <Heart className="w-5 h-5 text-[#B8A9C9]" />
+              <Heart className="h-5 w-5 text-[#B8A9C9]" />
 
               <h2 className="font-bold text-gray-800">
-                Minha preparação
+                {t('myPreparation')}
               </h2>
             </div>
 
             <p className="mt-1 text-sm text-gray-500">
-              {completed.length} de {preparationTasks.length} passos concluídos
+              {completed.length} {t('of')}{' '}
+              {preparationTaskKeys.length}{' '}
+              {t('returnStepsCompleted')}
             </p>
           </div>
 
@@ -170,24 +176,24 @@ export default function RetornoTrabalho({ onNavigate }) {
         </div>
 
         <div className="mt-5 space-y-3">
-          {preparationTasks.map((task, index) => {
+          {preparationTaskKeys.map((taskKey, index) => {
             const isCompleted = completed.includes(index);
 
             return (
               <button
-                key={task}
+                key={taskKey}
                 type="button"
                 onClick={() => toggleTask(index)}
-                className="w-full flex items-center gap-3 rounded-xl bg-[#FFFDFB] border border-[#F1EEFA] p-3 text-left hover:bg-[#FFF5EE] transition-colors"
+                className="flex w-full items-center gap-3 rounded-xl border border-[#F1EEFA] bg-[#FFFDFB] p-3 text-left transition-colors hover:bg-[#FFF5EE]"
               >
                 <span
-                  className={`w-7 h-7 shrink-0 rounded-full border-2 flex items-center justify-center ${
+                  className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 ${
                     isCompleted
-                      ? 'bg-emerald-500 border-emerald-500 text-white'
-                      : 'bg-white border-gray-300 text-transparent'
+                      ? 'border-emerald-500 bg-emerald-500 text-white'
+                      : 'border-gray-300 bg-white text-transparent'
                   }`}
                 >
-                  <Check className="w-4 h-4" strokeWidth={3} />
+                  <Check className="h-4 w-4" strokeWidth={3} />
                 </span>
 
                 <span
@@ -197,7 +203,7 @@ export default function RetornoTrabalho({ onNavigate }) {
                       : 'text-gray-700'
                   }`}
                 >
-                  {task}
+                  {t(taskKey)}
                 </span>
               </button>
             );
@@ -206,52 +212,53 @@ export default function RetornoTrabalho({ onNavigate }) {
       </section>
 
       <section>
-        <h2 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-          <Heart className="w-5 h-5 text-[#FFCBA4]" />
-          Passos importantes
+        <h2 className="mb-3 flex items-center gap-2 font-bold text-gray-800">
+          <Heart className="h-5 w-5 text-[#FFCBA4]" />
+          {t('returnImportantSteps')}
         </h2>
 
         <div className="space-y-4">
           {steps.map((step) => {
             const Icon = step.icon;
             const isOpen = openStep === step.id;
+            const stepTitle = t(step.titleKey);
 
             return (
               <article
                 key={step.id}
-                className={`rounded-2xl overflow-hidden bg-gradient-to-br ${step.bgColor} shadow-sm`}
+                className={`overflow-hidden rounded-2xl bg-gradient-to-br ${step.bgColor} shadow-sm`}
               >
                 <div className="p-4">
                   <div className="flex items-start gap-3">
-                    <div className="w-12 h-12 shrink-0 bg-white/80 rounded-xl flex items-center justify-center">
-                      <Icon className={`w-6 h-6 ${step.iconColor}`} />
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white/80">
+                      <Icon className={`h-6 w-6 ${step.iconColor}`} />
                     </div>
 
-                    <div className="flex-1 min-w-0">
+                    <div className="min-w-0 flex-1">
                       <h3 className="font-bold text-gray-800">
-                        {step.title}
+                        {stepTitle}
                       </h3>
 
                       <p className="mt-1 text-sm leading-5 text-gray-600">
-                        {step.description}
+                        {t(step.descriptionKey)}
                       </p>
                     </div>
 
                     <button
                       type="button"
                       onClick={() => toggleStep(step.id)}
-                      className="w-10 h-10 shrink-0 bg-white/70 rounded-xl flex items-center justify-center text-gray-600 hover:bg-white transition-colors"
+                      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/70 text-gray-600 transition-colors hover:bg-white"
                       aria-label={
                         isOpen
-                          ? `Ocultar orientações de ${step.title}`
-                          : `Ver orientações de ${step.title}`
+                          ? `${t('hideGuidance')} ${stepTitle}`
+                          : `${t('viewGuidance')} ${stepTitle}`
                       }
                       aria-expanded={isOpen}
                     >
                       {isOpen ? (
-                        <ChevronUp className="w-5 h-5" />
+                        <ChevronUp className="h-5 w-5" />
                       ) : (
-                        <ChevronDown className="w-5 h-5" />
+                        <ChevronDown className="h-5 w-5" />
                       )}
                     </button>
                   </div>
@@ -259,13 +266,14 @@ export default function RetornoTrabalho({ onNavigate }) {
                   {isOpen && (
                     <div className="mt-4 rounded-xl bg-white/70 p-4">
                       <ul className="space-y-3">
-                        {step.tips.map((tip) => (
+                        {step.tipKeys.map((tipKey) => (
                           <li
-                            key={tip}
+                            key={tipKey}
                             className="flex items-start gap-2 text-sm leading-5 text-gray-700"
                           >
-                            <span className="mt-1.5 w-2 h-2 shrink-0 rounded-full bg-[#B8A9C9]" />
-                            <span>{tip}</span>
+                            <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-[#B8A9C9]" />
+
+                            <span>{t(tipKey)}</span>
                           </li>
                         ))}
                       </ul>
@@ -273,9 +281,9 @@ export default function RetornoTrabalho({ onNavigate }) {
                       <button
                         type="button"
                         onClick={() => navigate(step.navigateTo)}
-                        className="mt-4 w-full rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm hover:bg-[#FFF5EE] transition-colors"
+                        className="mt-4 w-full rounded-xl bg-white px-4 py-3 text-sm font-semibold text-gray-700 shadow-sm transition-colors hover:bg-[#FFF5EE]"
                       >
-                        {step.actionLabel}
+                        {t(step.actionLabelKey)}
                       </button>
                     </div>
                   )}
@@ -288,13 +296,11 @@ export default function RetornoTrabalho({ onNavigate }) {
 
       <section className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
         <p className="font-bold text-amber-900">
-          Lembrete importante
+          {t('returnReminderTitle')}
         </p>
 
         <p className="mt-1 text-sm leading-6 text-amber-800">
-          Cada família tem uma rotina diferente. Use estas orientações como
-          apoio e procure uma unidade de saúde, banco de leite humano ou
-          profissional de confiança se precisar de orientação individual.
+          {t('returnReminderDescription')}
         </p>
       </section>
     </div>
