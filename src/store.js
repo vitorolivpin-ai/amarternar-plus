@@ -114,7 +114,7 @@ const translations = {
     cancelChange: 'Cancelar alteração',
     skipForNow: 'Pular por enquanto',
 
-   privacyConsentTitle: 'Privacidade e uso dos dados',
+  privacyConsentTitle: 'Privacidade e uso dos dados',
 
 privacyConsentDescription:
   'Antes de começar, leia como o AMARternar+ utiliza as informações inseridas por você.',
@@ -134,6 +134,85 @@ privacyAndDataDescription:
 
 viewPrivacy: 'Ver privacidade e dados',
 
+privacyEyebrow: 'TRANSPARÊNCIA E CONTROLE',
+
+privacyTitle: 'Privacidade e seus dados',
+
+privacyHeaderDescription:
+  'Conheça como o AMARternar+ utiliza e armazena as informações inseridas por você.',
+
+privacyDataCollectedTitle: 'Quais dados podem ser armazenados?',
+
+privacyDataCollectedDescription:
+  'O aplicativo pode guardar apenas as informações inseridas por você para disponibilizar os recursos escolhidos.',
+
+privacyDataProfile:
+  'Nome de preferência, avatar ou foto de perfil.',
+
+privacyDataRoutine:
+  'Respostas sobre rotina de trabalho, cuidados com o bebê e prioridades.',
+
+privacyDataTasks:
+  'Tarefas cadastradas por você.',
+
+privacyDataPumping:
+  'Registros de ordenha, como data, horário, duração, quantidade e observações.',
+
+privacyDataPreferences:
+  'Preferências do aplicativo, como idioma e dicas de uso.',
+
+privacyStorageTitle: 'Onde os dados ficam?',
+
+privacyStorageDescription:
+  'Nesta versão, as informações ficam armazenadas localmente no navegador ou dispositivo utilizado. Os dados não são enviados automaticamente para um servidor próprio do AMARternar+.',
+
+privacyPurposeTitle: 'Para que os dados são usados?',
+
+privacyPurpose1:
+  'Personalizar a experiência e os destaques do aplicativo.',
+
+privacyPurpose2:
+  'Organizar rotina, tarefas e registros pessoais.',
+
+privacyPurpose3:
+  'Exibir sugestões conforme as respostas do questionário.',
+
+privacyPurpose4:
+  'Manter suas preferências neste dispositivo.',
+
+privacySensitiveDataTitle:
+  'Evite registrar informações desnecessárias',
+
+privacySensitiveDataDescription:
+  'Evite inserir diagnósticos, documentos, fotos sensíveis, dados de terceiros ou informações clínicas detalhadas. O AMARternar+ é informativo e organizacional e não substitui atendimento profissional.',
+
+privacyConsentStatusTitle: 'Status do aceite',
+
+privacyConsentAccepted:
+  'Você aceitou o uso local das informações necessárias para o funcionamento do aplicativo.',
+
+privacyConsentNotAccepted:
+  'Não há um aceite de privacidade registrado para este perfil.',
+
+privacyConsentDate: 'Data do aceite',
+
+privacyNoConsentDate: 'Não disponível',
+
+privacyDateLocale: 'pt-BR',
+
+privacyPolicyVersion: 'Versão da política',
+
+privacyDeleteTitle: 'Apagar dados deste dispositivo',
+
+privacyDeleteDescription:
+  'Esta ação remove seu perfil, rotina, tarefas, registros de ordenha, preferências e o registro de aceite. Ela não pode ser desfeita.',
+
+privacyDeleteButton: 'Apagar todos os dados',
+
+privacyDeleteConfirmation:
+  'Tem certeza de que deseja apagar todos os dados do AMARternar+ salvos neste dispositivo? Esta ação não poderá ser desfeita.',
+
+backToProfile: 'Voltar ao perfil',
     onboardingWorkTitle: 'Como está sua rotina de trabalho hoje?',
     onboardingWorkSubtitle: 'Escolha a opção que mais combina com você.',
     workClt: 'Trabalho com carteira assinada',
@@ -684,7 +763,7 @@ viewPrivacy: 'Ver privacidade e dados',
     cancelChange: 'Cancel changes',
     skipForNow: 'Skip for now',
 
-   privacyConsentTitle: 'Privacy and data use',
+  privacyConsentTitle: 'Privacy and data use',
 
 privacyConsentDescription:
   'Before getting started, please read how AMARternar+ uses the information you enter.',
@@ -703,6 +782,86 @@ privacyAndDataDescription:
   'See how your information is used, check your privacy consent, and manage the data saved on this device.',
 
 viewPrivacy: 'View privacy and data',
+
+privacyEyebrow: 'TRANSPARENCY AND CONTROL',
+
+privacyTitle: 'Privacy and your data',
+
+privacyHeaderDescription:
+  'Learn how AMARternar+ uses and stores the information you enter.',
+
+privacyDataCollectedTitle: 'What data may be stored?',
+
+privacyDataCollectedDescription:
+  'The app may store only the information you enter to provide the features you choose to use.',
+
+privacyDataProfile:
+  'Preferred name, avatar, or profile photo.',
+
+privacyDataRoutine:
+  'Answers about work routine, baby care, and priorities.',
+
+privacyDataTasks:
+  'Tasks you create.',
+
+privacyDataPumping:
+  'Pumping records, such as date, time, duration, quantity, and notes.',
+
+privacyDataPreferences:
+  'App preferences, such as language and usage tips.',
+
+privacyStorageTitle: 'Where is the data stored?',
+
+privacyStorageDescription:
+  'In this version, information is stored locally in the browser or device used. Data is not automatically sent to an AMARternar+ server.',
+
+privacyPurposeTitle: 'Why is the data used?',
+
+privacyPurpose1:
+  'To personalize the app experience and highlights.',
+
+privacyPurpose2:
+  'To organize routine, tasks, and personal records.',
+
+privacyPurpose3:
+  'To display suggestions based on questionnaire answers.',
+
+privacyPurpose4:
+  'To keep your preferences on this device.',
+
+privacySensitiveDataTitle:
+  'Avoid entering unnecessary information',
+
+privacySensitiveDataDescription:
+  'Avoid entering diagnoses, documents, sensitive photos, third-party data, or detailed clinical information. AMARternar+ is informational and organizational and does not replace professional care.',
+
+privacyConsentStatusTitle: 'Consent status',
+
+privacyConsentAccepted:
+  'You accepted the local use of the information needed for the app to function.',
+
+privacyConsentNotAccepted:
+  'There is no privacy consent recorded for this profile.',
+
+privacyConsentDate: 'Consent date',
+
+privacyNoConsentDate: 'Not available',
+
+privacyDateLocale: 'en-US',
+
+privacyPolicyVersion: 'Policy version',
+
+privacyDeleteTitle: 'Delete data from this device',
+
+privacyDeleteDescription:
+  'This action removes your profile, routine, tasks, pumping records, preferences, and consent record. It cannot be undone.',
+
+privacyDeleteButton: 'Delete all data',
+
+privacyDeleteConfirmation:
+  'Are you sure you want to delete all AMARternar+ data saved on this device? This action cannot be undone.',
+
+backToProfile: 'Back to profile',
     onboardingWorkTitle: 'What is your work routine like today?',
     onboardingWorkSubtitle:
       'Choose the option that best describes you.',
