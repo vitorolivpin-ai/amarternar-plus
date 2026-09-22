@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 
 import { useStore } from './store';
-import { supabase } from './supabaseClient';
+import { supabase, isPasswordRecovery } from './supabaseClient';
 
 import Biblioteca from './components/Biblioteca';
 import CuidadosInteligentes from './components/CuidadosInteligentes';
@@ -444,7 +444,8 @@ export default function App() {
     window.location.reload();
   }
 
-  if (!isLoggedIn) {
+  // Mostra o Login também quando a usuária chega pelo link de redefinição de senha.
+  if (!isLoggedIn || isPasswordRecovery) {
     return <Login />;
   }
 
