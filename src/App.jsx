@@ -12,9 +12,9 @@ import {
   Globe,
   Scale,
   Lightbulb,
-  BriefcaseBusiness,
-  ListChecks,
-  CalendarHeart,
+  Briefcase,
+  ClipboardList,
+  Calendar,
   ArrowRight,
 } from 'lucide-react';
 
@@ -48,7 +48,7 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     },
     {
       id: 'tarefas',
-      icon: ListChecks,
+      icon: ClipboardList,
       title: 'Organize suas tarefas',
       description:
         'Use a área de tarefas para criar lembretes e acompanhar as atividades importantes do dia.',
@@ -60,7 +60,7 @@ function Suggestions({ profile, onContinue, onNavigate }) {
   if (routine.workType === 'clt') {
     suggestions.unshift({
       id: 'retorno',
-      icon: BriefcaseBusiness,
+      icon: Briefcase,
       title: 'Prepare seu retorno ao trabalho',
       description:
         'Confira o checklist, orientações e informações que podem ajudar na organização dessa fase.',
@@ -72,7 +72,7 @@ function Suggestions({ profile, onContinue, onNavigate }) {
   if (routine.schedule === 'noite' || routine.schedule === '12x36') {
     suggestions.push({
       id: 'turno',
-      icon: CalendarHeart,
+      icon: Calendar,
       title: 'Planeje sua rotina para horários diferentes',
       description:
         'Organize tarefas e registros de ordenha de acordo com os horários que funcionam melhor para você.',
@@ -84,7 +84,7 @@ function Suggestions({ profile, onContinue, onNavigate }) {
   if (routine.babyCare === 'creche') {
     suggestions.push({
       id: 'creche',
-      icon: CalendarHeart,
+      icon: Calendar,
       title: 'Organize a rotina com a creche',
       description:
         'Use as tarefas para lembrar itens, horários e informações importantes para quem cuida do bebê.',
@@ -96,7 +96,7 @@ function Suggestions({ profile, onContinue, onNavigate }) {
   if (routine.priority === 'retorno') {
     suggestions.unshift({
       id: 'prioridade-retorno',
-      icon: BriefcaseBusiness,
+      icon: Briefcase,
       title: 'Seu foco é o retorno ao trabalho',
       description:
         'Comece pelo guia de retorno ao trabalho e adapte o checklist à sua realidade.',
@@ -268,7 +268,6 @@ export default function App() {
     const profileToSave = {
       ...profile,
       ...updatedProfile,
-
       routine: {
         ...profile?.routine,
         ...updatedProfile?.routine,
@@ -299,7 +298,6 @@ export default function App() {
     const updatedProfile = {
       ...profile,
       ...onboardingData,
-
       routine: {
         ...profile?.routine,
         ...onboardingData?.routine,
@@ -307,7 +305,6 @@ export default function App() {
     };
 
     handleProfileSave(updatedProfile);
-
     saveRoutine(updatedProfile.routine);
     setShowOnboarding(false);
     setActiveTab('home');
@@ -417,7 +414,6 @@ export default function App() {
         <div className="flex items-center gap-2">
           <div className="relative">
             <Heart className="h-8 w-8 fill-[#FFCBA4] text-[#FFCBA4]" />
-
             <Droplets className="absolute -bottom-1 -right-1 h-4 w-4 text-[#DCD0FF]" />
           </div>
 
