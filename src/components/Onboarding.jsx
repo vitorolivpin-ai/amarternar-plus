@@ -4,6 +4,7 @@ import {
   Check,
   ChevronLeft,
   Heart,
+  ShieldCheck,
 } from 'lucide-react';
 
 import { useStore } from '../store';
@@ -162,6 +163,8 @@ const questionDefinitions = [
   },
 ];
 
+const privacyPolicyVersion = '1.0';
+
 export default function Onboarding({
   profile,
   onComplete,
@@ -186,11 +189,15 @@ export default function Onboarding({
 
   const [answers, setAnswers] = useState(initialAnswers);
   const [stepIndex, setStepIndex] = useState(0);
+  const [acceptedPrivacy, setAcceptedPrivacy] = useState(
+    Boolean(profile?.privacyConsent?.accepted)
+  );
 
   useEffect(() => {
     setAnswers(initialAnswers);
     setStepIndex(0);
-  }, [initialAnswers]);
+    setAcceptedPrivacy(Boolean(profile?.privacyConsent?.accepted));
+  }, [initialAnswers, profile?.privacyConsent?.accepted]);
 
   const visibleQuestions = questionDefinitions.filter((question) => {
     if (!question.showWhen) {
@@ -200,8 +207,10 @@ export default function Onboarding({
     return question.showWhen(answers);
   });
 
+  const isPrivacyStep = stepIndex === visibleQuestions.length;
+  const totalSteps = visibleQuestions.length + 1;
+
   const currentQuestion = visibleQuestions[stepIndex];
-  const totalSteps = visibleQuestions.length;
 
   const progress = Math.round(
     ((stepIndex + 1) / totalSteps) * 100
@@ -230,23 +239,40 @@ export default function Onboarding({
             : true,
       },
 
+      privacyConsent: {
+        accepted: true,
+        acceptedAt:
+          profile?.privacyConsent?.acceptedAt ||
+          new Date().toISOString(),
+        policyVersion: privacyPolicyVersion,
+      },
+
       onboardingCompleted: true,
     };
   }
 
   function finishOnboarding() {
+    if (!acceptedPrivacy) {
+      return;
+    }
+
     const updatedProfile = buildUpdatedProfile();
 
     onComplete(updatedProfile);
   }
 
   function goNext() {
+    if (isPrivacyStep) {
+      finishOnboarding();
+      return;
+    }
+
     if (stepIndex < visibleQuestions.length - 1) {
       setStepIndex((previous) => previous + 1);
       return;
     }
 
-    finishOnboarding();
+    setStepIndex(visibleQuestions.length);
   }
 
   function goBack() {
@@ -255,26 +281,14 @@ export default function Onboarding({
     }
   }
 
-  function skipOnboarding() {
-    const updatedProfile = {
-      ...profile,
-
-      routine: {
-        ...profile?.routine,
-        priority: profile?.routine?.priority || 'cuidados',
-        wantsTutorial: true,
-      },
-
-      onboardingCompleted: true,
-    };
-
-    onComplete(updatedProfile);
-  }
-
   const hasSelectedOption =
     currentQuestion &&
     answers[currentQuestion.id] !== undefined &&
     answers[currentQuestion.id] !== '';
+
+  const canContinue = isPrivacyStep
+    ? acceptedPrivacy
+    : hasSelectedOption;
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#FFF5EE] to-[#F5F0FF] p-4">
@@ -317,47 +331,86 @@ export default function Onboarding({
         </header>
 
         <section className="p-6">
-          <h2 className="text-xl font-bold text-gray-800">
-            {currentQuestion ? t(currentQuestion.titleKey) : ''}
-          </h2>
+          {isPrivacyStep ? (
+            <>
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F5F0FF] text-[#8B7BA8]">
+                <ShieldCheck className="h-6 w-6" />
+              </div>
 
-          <p className="mt-2 text-sm leading-5 text-gray-500">
-            {currentQuestion ? t(currentQuestion.subtitleKey) : ''}
-          </p>
+              <h2 className="mt-4 text-xl font-bold text-gray-800">
+                {t('privacyConsentTitle')}
+              </h2>
 
-          <div className="mt-5 space-y-3">
-            {currentQuestion?.options.map((option) => {
-              const isSelected =
-                answers[currentQuestion.id] === option.value;
+              <p className="mt-2 text-sm leading-5 text-gray-500">
+                {t('privacyConsentDescription')}
+              </p>
 
-              return (
-                <button
-                  key={String(option.value)}
-                  type="button"
-                  onClick={() => selectOption(option.value)}
-                  className={`flex w-full items-center gap-3 rounded-xl border-2 p-4 text-left transition-all ${
-                    isSelected
-                      ? 'border-[#B8A9C9] bg-[#F5F0FF]'
-                      : 'border-[#F1EEFA] bg-white hover:bg-[#FFF5EE]'
-                  }`}
-                >
-                  <span
-                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
-                      isSelected
-                        ? 'border-[#B8A9C9] bg-[#B8A9C9] text-white'
-                        : 'border-gray-300 text-transparent'
-                    }`}
-                  >
-                    <Check className="h-4 w-4" strokeWidth={3} />
+              <div className="mt-5 rounded-2xl border border-[#E6E6FA] bg-[#FFFDFB] p-4">
+                <label className="flex cursor-pointer items-start gap-3">
+                  <input
+                    type="checkbox"
+                    checked={acceptedPrivacy}
+                    onChange={(event) =>
+                      setAcceptedPrivacy(event.target.checked)
+                    }
+                    className="mt-1 h-5 w-5 shrink-0 cursor-pointer accent-[#B8A9C9]"
+                  />
+
+                  <span className="text-sm leading-6 text-gray-700">
+                    {t('privacyConsentCheckbox')}
                   </span>
+                </label>
+              </div>
 
-                  <span className="text-sm font-medium text-gray-700">
-                    {t(option.labelKey)}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+              <p className="mt-4 text-xs leading-5 text-gray-500">
+                {t('privacyConsentNotice')}
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-xl font-bold text-gray-800">
+                {currentQuestion ? t(currentQuestion.titleKey) : ''}
+              </h2>
+
+              <p className="mt-2 text-sm leading-5 text-gray-500">
+                {currentQuestion ? t(currentQuestion.subtitleKey) : ''}
+              </p>
+
+              <div className="mt-5 space-y-3">
+                {currentQuestion?.options.map((option) => {
+                  const isSelected =
+                    answers[currentQuestion.id] === option.value;
+
+                  return (
+                    <button
+                      key={String(option.value)}
+                      type="button"
+                      onClick={() => selectOption(option.value)}
+                      className={`flex w-full items-center gap-3 rounded-xl border-2 p-4 text-left transition-all ${
+                        isSelected
+                          ? 'border-[#B8A9C9] bg-[#F5F0FF]'
+                          : 'border-[#F1EEFA] bg-white hover:bg-[#FFF5EE]'
+                      }`}
+                    >
+                      <span
+                        className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 ${
+                          isSelected
+                            ? 'border-[#B8A9C9] bg-[#B8A9C9] text-white'
+                            : 'border-gray-300 text-transparent'
+                        }`}
+                      >
+                        <Check className="h-4 w-4" strokeWidth={3} />
+                      </span>
+
+                      <span className="text-sm font-medium text-gray-700">
+                        {t(option.labelKey)}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          )}
 
           <div className="mt-7 flex items-center gap-3">
             {stepIndex > 0 && (
@@ -374,34 +427,26 @@ export default function Onboarding({
             <button
               type="button"
               onClick={goNext}
-              disabled={!hasSelectedOption}
+              disabled={!canContinue}
               className={`flex-1 rounded-xl py-3.5 font-bold transition-colors ${
-                hasSelectedOption
+                canContinue
                   ? 'bg-gradient-to-r from-[#FFCBA4] to-[#B8A9C9] text-white shadow-md hover:shadow-lg'
                   : 'cursor-not-allowed bg-gray-100 text-gray-400'
               }`}
             >
-              {stepIndex === visibleQuestions.length - 1
-                ? t('viewSuggestions')
+              {isPrivacyStep
+                ? t('startUsingApp')
                 : t('continue')}
             </button>
           </div>
 
-          {onCancel ? (
+          {onCancel && (
             <button
               type="button"
               onClick={onCancel}
               className="mt-4 w-full text-sm text-[#8B7BA8] hover:underline"
             >
               {t('cancelChange')}
-            </button>
-          ) : (
-            <button
-              type="button"
-              onClick={skipOnboarding}
-              className="mt-4 w-full text-sm text-[#8B7BA8] hover:underline"
-            >
-              {t('skipForNow')}
             </button>
           )}
         </section>
