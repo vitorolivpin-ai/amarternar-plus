@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import {
   Heart,
@@ -11,6 +11,11 @@ import {
   User,
   Globe,
   Scale,
+  Lightbulb,
+  BriefcaseBusiness,
+  ListChecks,
+  CalendarHeart,
+  ArrowRight,
 } from 'lucide-react';
 
 import { useStore } from './store';
@@ -28,8 +33,159 @@ import RetornoTrabalho from './components/RetornoTrabalho';
 import Onboarding from './components/Onboarding';
 import Perfil from './components/Perfil';
 
+function Suggestions({ profile, onContinue, onNavigate }) {
+  const routine = profile?.routine || {};
+
+  const suggestions = [
+    {
+      id: 'diario',
+      icon: Droplets,
+      title: 'Comece pelo Diário de Ordenha',
+      description:
+        'Registre horários, duração e quantidade para acompanhar sua rotina de forma prática.',
+      tab: 'ordenha',
+      color: 'bg-[#E8F6FF] text-[#62A6C8]',
+    },
+    {
+      id: 'tarefas',
+      icon: ListChecks,
+      title: 'Organize suas tarefas',
+      description:
+        'Use a área de tarefas para criar lembretes e acompanhar as atividades importantes do dia.',
+      tab: 'tarefas',
+      color: 'bg-[#FFF3E8] text-[#EAA76A]',
+    },
+  ];
+
+  if (routine.workType === 'clt' || routine.workType === 'CLT') {
+    suggestions.unshift({
+      id: 'retorno',
+      icon: BriefcaseBusiness,
+      title: 'Prepare seu retorno ao trabalho',
+      description:
+        'Confira o checklist, orientações e informações que podem ajudar na organização dessa fase.',
+      tab: 'retorno',
+      color: 'bg-[#F0ECFF] text-[#8D7AB8]',
+    });
+  }
+
+  if (routine.shift === 'noturno' || routine.shift === 'night') {
+    suggestions.push({
+      id: 'turno',
+      icon: CalendarHeart,
+      title: 'Planeje sua rotina para o turno noturno',
+      description:
+        'Organize tarefas e registros de ordenha de acordo com os horários que funcionam melhor para você.',
+      tab: 'tarefas',
+      color: 'bg-[#FCEEF5] text-[#C8789E]',
+    });
+  }
+
+  if (
+    routine.babyInDaycare === 'sim' ||
+    routine.babyInDaycare === 'yes' ||
+    routine.babyInDaycare === true
+  ) {
+    suggestions.push({
+      id: 'creche',
+      icon: CalendarHeart,
+      title: 'Organize a rotina com a creche',
+      description:
+        'Use as tarefas para lembrar itens, horários e informações importantes para quem cuida do bebê.',
+      tab: 'tarefas',
+      color: 'bg-[#EEF8EF] text-[#6B9E73]',
+    });
+  }
+
+  function handleSuggestionClick(tab) {
+    onNavigate(tab);
+    onContinue();
+  }
+
+  return (
+    <main className="min-h-screen bg-gradient-to-b from-[#FFF5EE] to-[#F5F0FF] px-4 py-8">
+      <section className="mx-auto max-w-md">
+        <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FFF1E8]">
+            <Lightbulb className="h-7 w-7 text-[#EAA76A]" />
+          </div>
+
+          <p className="text-sm font-semibold text-[#B8A9C9]">
+            ROTINA PERSONALIZADA
+          </p>
+
+          <h1 className="mt-2 text-2xl font-bold text-slate-800">
+            Sugestões para você{profile?.displayName ? `, ${profile.displayName}` : ''}
+          </h1>
+
+          <p className="mt-3 leading-6 text-slate-600">
+            Com base nas informações da sua rotina, separamos alguns caminhos
+            para você começar a usar o AMARternar+.
+          </p>
+
+          <div className="mt-6 space-y-3">
+            {suggestions.map((suggestion) => {
+              const Icon = suggestion.icon;
+
+              return (
+                <button
+                  key={suggestion.id}
+                  type="button"
+                  onClick={() => handleSuggestionClick(suggestion.tab)}
+                  className="flex w-full items-start gap-3 rounded-2xl border border-slate-100 bg-white p-4 text-left shadow-sm transition hover:border-[#E6E6FA] hover:bg-[#FCFBFF]"
+                >
+                  <span
+                    className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${suggestion.color}`}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </span>
+
+                  <span className="flex-1">
+                    <span className="block font-semibold text-slate-800">
+                      {suggestion.title}
+                    </span>
+
+                    <span className="mt-1 block text-sm leading-5 text-slate-500">
+                      {suggestion.description}
+                    </span>
+                  </span>
+
+                  <ArrowRight className="mt-2 h-5 w-5 shrink-0 text-[#B8A9C9]" />
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            type="button"
+            onClick={onContinue}
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#B8A9C9] px-4 py-4 font-semibold text-white transition hover:bg-[#A194B4]"
+          >
+            Ir para meu painel
+            <ArrowRight className="h-5 w-5" />
+          </button>
+
+          <p className="mt-4 text-center text-xs leading-5 text-slate-500">
+            Você poderá alterar sua rotina e atualizar estas sugestões quando
+            quiser no seu perfil.
+          </p>
+        </div>
+      </section>
+    </main>
+  );
+}
+
 export default function App() {
-  const { user, isLoggedIn, logout, language, toggleLanguage, t } = useStore();
+  const {
+    user,
+    isLoggedIn,
+    logout,
+    language,
+    toggleLanguage,
+    t,
+    saveRoutine,
+    finishSuggestions,
+  } = useStore();
 
   const [activeTab, setActiveTab] = useState('home');
   const [showEmergencias, setShowEmergencias] = useState(false);
@@ -54,17 +210,34 @@ export default function App() {
     }
   });
 
+  const showSuggestions = Boolean(user?.onboarding?.showSuggestions);
+
+  useEffect(() => {
+    if (showSuggestions) {
+      setShowOnboarding(false);
+    }
+  }, [showSuggestions]);
+
   function handleProfileSave(updatedProfile) {
+    const profileToSave = {
+      ...profile,
+      ...updatedProfile,
+      routine: {
+        ...profile?.routine,
+        ...updatedProfile?.routine,
+      },
+    };
+
     try {
       localStorage.setItem(
         'amarternar_profile',
-        JSON.stringify(updatedProfile)
+        JSON.stringify(profileToSave)
       );
-
-      setProfile(updatedProfile);
     } catch (error) {
-      setProfile(updatedProfile);
+      // O estado continua atualizado mesmo se o navegador não permitir salvar.
     }
+
+    setProfile(profileToSave);
   }
 
   function openProfile() {
@@ -75,18 +248,46 @@ export default function App() {
     setShowOnboarding(true);
   }
 
+  function handleOnboardingComplete(onboardingData) {
+    const updatedProfile = {
+      ...profile,
+      ...onboardingData,
+      routine: {
+        ...profile?.routine,
+        ...onboardingData?.routine,
+      },
+    };
+
+    handleProfileSave(updatedProfile);
+
+    saveRoutine(updatedProfile.routine || onboardingData.routine || {});
+    setShowOnboarding(false);
+    setActiveTab('home');
+  }
+
+  function handleFinishSuggestions() {
+    finishSuggestions();
+    setActiveTab('home');
+  }
+
+  function handleSuggestionsNavigate(tab) {
+    setActiveTab(tab);
+  }
+
   if (!isLoggedIn) {
     return <Login />;
   }
 
   if (showOnboarding) {
+    return <Onboarding onComplete={handleOnboardingComplete} />;
+  }
+
+  if (showSuggestions) {
     return (
-      <Onboarding
-        onComplete={(newProfile) => {
-          handleProfileSave(newProfile);
-          setShowOnboarding(false);
-          setActiveTab('home');
-        }}
+      <Suggestions
+        profile={profile}
+        onContinue={handleFinishSuggestions}
+        onNavigate={handleSuggestionsNavigate}
       />
     );
   }
@@ -157,16 +358,16 @@ export default function App() {
   const displayName = profile?.displayName || user?.name || t('guest');
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFF5EE] to-[#F5F0FF] flex flex-col">
-      <header className="bg-white/80 backdrop-blur-sm shadow-sm px-4 py-3 flex items-center justify-between sticky top-0 z-40">
+    <div className="flex min-h-screen flex-col bg-gradient-to-b from-[#FFF5EE] to-[#F5F0FF]">
+      <header className="sticky top-0 z-40 flex items-center justify-between bg-white/80 px-4 py-3 shadow-sm backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <div className="relative">
-            <Heart className="w-8 h-8 text-[#FFCBA4] fill-[#FFCBA4]" />
+            <Heart className="h-8 w-8 fill-[#FFCBA4] text-[#FFCBA4]" />
 
-            <Droplets className="w-4 h-4 text-[#DCD0FF] absolute -bottom-1 -right-1" />
+            <Droplets className="absolute -bottom-1 -right-1 h-4 w-4 text-[#DCD0FF]" />
           </div>
 
-          <span className="text-xl font-bold bg-gradient-to-r from-[#FFCBA4] to-[#B8A9C9] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-[#FFCBA4] to-[#B8A9C9] bg-clip-text text-xl font-bold text-transparent">
             AMARternar+
           </span>
         </div>
@@ -175,7 +376,7 @@ export default function App() {
           <button
             type="button"
             onClick={toggleLanguage}
-            className="p-2 rounded-full hover:bg-[#E6E6FA]/50 transition-colors"
+            className="rounded-full p-2 transition-colors hover:bg-[#E6E6FA]/50"
             title={language === 'pt' ? 'English' : 'Português'}
             aria-label={
               language === 'pt'
@@ -183,33 +384,33 @@ export default function App() {
                 : 'Alterar idioma para português'
             }
           >
-            <Globe className="w-5 h-5 text-[#B8A9C9]" />
+            <Globe className="h-5 w-5 text-[#B8A9C9]" />
           </button>
 
           <button
             type="button"
             onClick={openProfile}
-            className="flex items-center gap-2 max-w-[150px] px-3 py-1.5 bg-[#E6E6FA]/30 rounded-full hover:bg-[#E6E6FA]/60 transition-colors"
+            className="flex max-w-[150px] items-center gap-2 rounded-full bg-[#E6E6FA]/30 px-3 py-1.5 transition-colors hover:bg-[#E6E6FA]/60"
             aria-label="Abrir meu perfil"
             title="Abrir meu perfil"
           >
-            <span className="w-6 h-6 shrink-0 rounded-full overflow-hidden bg-white flex items-center justify-center">
+            <span className="flex h-6 w-6 shrink-0 items-center justify-center overflow-hidden rounded-full bg-white">
               {profile?.profilePhoto ? (
                 <img
                   src={profile.profilePhoto}
                   alt=""
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover"
                 />
               ) : profile?.avatar ? (
                 <span className="text-sm" aria-hidden="true">
                   {profile.avatar}
                 </span>
               ) : (
-                <User className="w-4 h-4 text-[#B8A9C9]" />
+                <User className="h-4 w-4 text-[#B8A9C9]" />
               )}
             </span>
 
-            <span className="text-sm text-gray-700 font-medium truncate">
+            <span className="truncate text-sm font-medium text-gray-700">
               {displayName}
             </span>
           </button>
@@ -217,21 +418,19 @@ export default function App() {
           <button
             type="button"
             onClick={logout}
-            className="p-2 rounded-full hover:bg-red-50 transition-colors"
+            className="rounded-full p-2 transition-colors hover:bg-red-50"
             title={t('logout')}
             aria-label={t('logout')}
           >
-            <LogOut className="w-5 h-5 text-red-400" />
+            <LogOut className="h-5 w-5 text-red-400" />
           </button>
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto pb-20">
-        {renderContent()}
-      </main>
+      <main className="flex-1 overflow-auto pb-20">{renderContent()}</main>
 
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-sm shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-2 py-2 z-50">
-        <div className="flex justify-around items-center max-w-lg mx-auto">
+      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 px-2 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur-sm">
+        <div className="mx-auto flex max-w-lg items-center justify-around">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -243,21 +442,19 @@ export default function App() {
                 onClick={() => setActiveTab(tab.id)}
                 aria-label={tab.label}
                 aria-current={isActive ? 'page' : undefined}
-                className={`flex flex-col items-center gap-1 px-3 py-2 rounded-xl transition-all duration-200 min-w-[56px] ${
+                className={`flex min-w-[56px] flex-col items-center gap-1 rounded-xl px-3 py-2 transition-all duration-200 ${
                   isActive
-                    ? 'bg-gradient-to-br from-[#FFDAB9]/40 to-[#E6E6FA]/40 text-[#B8A9C9] scale-105'
-                    : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'
+                    ? 'scale-105 bg-gradient-to-br from-[#FFDAB9]/40 to-[#E6E6FA]/40 text-[#B8A9C9]'
+                    : 'text-gray-400 hover:bg-gray-50 hover:text-gray-600'
                 }`}
               >
                 <Icon
-                  className={`w-5 h-5 ${
+                  className={`h-5 w-5 ${
                     isActive ? 'text-[#FFCBA4]' : ''
                   }`}
                 />
 
-                <span className="text-xs font-medium">
-                  {tab.label}
-                </span>
+                <span className="text-xs font-medium">{tab.label}</span>
               </button>
             );
           })}
@@ -266,12 +463,12 @@ export default function App() {
 
       {showEmergencias && (
         <div
-          className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
           onClick={() => setShowEmergencias(false)}
           role="presentation"
         >
           <div
-            className="bg-white rounded-2xl max-w-md w-full max-h-[80vh] overflow-auto"
+            className="max-h-[80vh] w-full max-w-md overflow-auto rounded-2xl bg-white"
             onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-modal="true"
