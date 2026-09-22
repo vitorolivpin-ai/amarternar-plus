@@ -32,6 +32,7 @@ import CuidadosInteligentes from './components/CuidadosInteligentes';
 import RetornoTrabalho from './components/RetornoTrabalho';
 import Onboarding from './components/Onboarding';
 import Perfil from './components/Perfil';
+import Privacidade from './components/Privacidade';
 
 function Suggestions({ profile, onContinue, onNavigate, language }) {
   const routine = profile?.routine || {};
@@ -329,26 +330,42 @@ export default function App() {
   }, [showSuggestions]);
 
   function handleProfileSave(updatedProfile) {
-    const profileToSave = {
-      ...profile,
-      ...updatedProfile,
-      routine: {
-        ...profile?.routine,
-        ...updatedProfile?.routine,
-      },
-    };
+  const profileToSave = {
+    ...profile,
+    ...updatedProfile,
 
-    try {
-      localStorage.setItem(
-        'amarternar_profile',
-        JSON.stringify(profileToSave)
-      );
-    } catch (error) {
-      // Mantém os dados no estado mesmo se o navegador bloquear o localStorage.
-    }
+    profile: {
+      ...profile?.profile,
+      ...updatedProfile?.profile,
+    },
 
-    setProfile(profileToSave);
+    routine: {
+      ...profile?.routine,
+      ...updatedProfile?.routine,
+    },
+
+    onboarding: {
+      ...profile?.onboarding,
+      ...updatedProfile?.onboarding,
+    },
+
+    privacyConsent: {
+      ...profile?.privacyConsent,
+      ...updatedProfile?.privacyConsent,
+    },
+  };
+
+  try {
+    localStorage.setItem(
+      'amarternar_profile',
+      JSON.stringify(profileToSave)
+    );
+  } catch (error) {
+    // Mantém os dados no estado mesmo se o navegador bloquear o localStorage.
   }
+
+  setProfile(profileToSave);
+}
 
   function openProfile() {
     setActiveTab('perfil');
@@ -379,23 +396,30 @@ export default function App() {
     setActiveTab(tab);
   }
 
-  function handleSuggestionsNavigate(tab) {
-    setActiveTab(tab);
-  }
+ function handleSuggestionsNavigate(tab) {
+  setActiveTab(tab);
+}
 
-  if (!isLoggedIn) {
-    return <Login />;
-  }
+function handleDeleteAllData() {
+  localStorage.removeItem('amarternar-storage');
+  localStorage.removeItem('amarternar_profile');
 
-  if (showOnboarding) {
-    return (
-      <Onboarding
-        profile={profile}
-        onComplete={handleOnboardingComplete}
-        onCancel={() => setShowOnboarding(false)}
-      />
-    );
-  }
+  window.location.reload();
+}
+
+if (!isLoggedIn) {
+  return <Login />;
+}
+
+if (showOnboarding) {
+  return (
+    <Onboarding
+      profile={profile}
+      onComplete={handleOnboardingComplete}
+      onCancel={() => setShowOnboarding(false)}
+    />
+  );
+}
 
   if (showSuggestions) {
     return (
