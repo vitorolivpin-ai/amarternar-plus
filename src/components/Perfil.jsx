@@ -9,37 +9,39 @@ import {
   User,
 } from 'lucide-react';
 
+import { useStore } from '../store';
+
 const avatarOptions = ['👩', '💛', '🌸', '🍼', '✨', '🌷'];
 
-const labels = {
-  clt: 'Trabalho com carteira assinada',
-  autonoma: 'Trabalho por conta própria',
-  informal: 'Trabalho sem horário fixo',
-  estudante: 'Estou estudando',
-  sem_trabalho: 'Não estou trabalhando no momento',
-  nao_informar: 'Prefiro não informar',
+const routineLabelKeys = {
+  clt: 'workClt',
+  autonoma: 'workAutonomous',
+  informal: 'workInformal',
+  estudante: 'workStudent',
+  sem_trabalho: 'workNotWorking',
+  nao_informar: 'preferNotToSay',
 
-  fixo_dia: 'Horário fixo durante o dia',
-  manha: 'Turno da manhã',
-  tarde: 'Turno da tarde',
-  noite: 'Turno da noite',
-  '12x36': 'Escala 12x36',
-  variavel: 'Horários variáveis',
-  casa: 'Trabalho ou estudo em casa',
-  outro: 'Outro ou não sei',
+  fixo_dia: 'scheduleFixedDay',
+  manha: 'scheduleMorning',
+  tarde: 'scheduleAfternoon',
+  noite: 'scheduleNight',
+  '12x36': 'scheduleTwelveByThirtySix',
+  variavel: 'scheduleVariable',
+  casa: 'scheduleHome',
+  outro: 'scheduleOther',
 
-  creche: 'O bebê vai para a creche',
-  familiar: 'O bebê fica com familiar',
-  cuidador: 'O bebê fica com cuidador(a)',
-  comigo: 'O bebê fica comigo',
-  organizando: 'Ainda estou organizando',
+  creche: 'babyCareDaycare',
+  familiar: 'babyCareFamily',
+  cuidador: 'babyCareCaregiver',
+  comigo: 'babyCareWithMe',
+  organizando: 'babyCareOrganizing',
 
-  retorno: 'Retorno ao trabalho ou estudo',
-  ordenha: 'Ordenha e armazenamento',
-  direitos: 'Meus direitos como lactante',
-  tarefas: 'Minha rotina e tarefas da semana',
-  mapa: 'Encontrar apoio perto de mim',
-  cuidados: 'Cuidados comigo e com o bebê',
+  retorno: 'priorityReturnToWork',
+  ordenha: 'priorityPumping',
+  direitos: 'priorityRights',
+  tarefas: 'priorityTasks',
+  mapa: 'priorityMap',
+  cuidados: 'priorityCare',
 };
 
 export default function Perfil({
@@ -47,6 +49,8 @@ export default function Perfil({
   onSave,
   onEditRoutine,
 }) {
+  const t = useStore((state) => state.t);
+
   const [displayName, setDisplayName] = useState(
     profile?.displayName || ''
   );
@@ -70,16 +74,12 @@ export default function Perfil({
     }
 
     if (!file.type.startsWith('image/')) {
-      setPhotoError(
-        'Escolha uma imagem no formato JPG, PNG ou WEBP.'
-      );
+      setPhotoError(t('invalidImageFormat'));
       return;
     }
 
     if (file.size > 1024 * 1024) {
-      setPhotoError(
-        'Escolha uma foto de até 1 MB.'
-      );
+      setPhotoError(t('imageTooLarge'));
       return;
     }
 
@@ -106,7 +106,7 @@ export default function Perfil({
       displayName:
         displayName.trim() ||
         profile?.displayName ||
-        'Usuária',
+        t('userFallbackName'),
       avatar,
       profilePhoto,
       onboardingCompleted: true,
@@ -120,52 +120,52 @@ export default function Perfil({
 
       onSave(updatedProfile);
 
-      setSuccessMessage(
-        'Perfil atualizado com sucesso!'
-      );
-
+      setSuccessMessage(t('profileUpdated'));
       setPhotoError('');
     } catch (error) {
-      setPhotoError(
-        'Não foi possível salvar a foto. Tente escolher uma imagem menor.'
-      );
+      setPhotoError(t('couldNotSavePhoto'));
       setSuccessMessage('');
     }
   }
 
   const profileItems = [
     {
-      label: 'Trabalho ou estudo',
-      value: labels[profile?.workType],
+      label: t('routineWorkOrStudy'),
+      valueKey: routineLabelKeys[profile?.routine?.workType],
     },
     {
-      label: 'Horário ou escala',
-      value: labels[profile?.schedule],
+      label: t('routineSchedule'),
+      valueKey: routineLabelKeys[profile?.routine?.schedule],
     },
     {
-      label: 'Cuidados com o bebê',
-      value: labels[profile?.babyCare],
+      label: t('routineBabyCare'),
+      valueKey: routineLabelKeys[profile?.routine?.babyCare],
     },
     {
-      label: 'Prioridade atual',
-      value: labels[profile?.priority],
+      label: t('routineCurrentPriority'),
+      valueKey: routineLabelKeys[profile?.routine?.priority],
     },
-  ].filter((item) => item.value);
+  ]
+    .filter((item) => item.valueKey)
+    .map((item) => ({
+      ...item,
+      value: t(item.valueKey),
+    }));
 
   return (
-    <div className="p-4 pb-28 max-w-2xl mx-auto space-y-5">
-      <section className="bg-gradient-to-r from-[#FFDAB9] to-[#E6E6FA] rounded-3xl p-6">
-        <div className="w-24 h-24 rounded-full overflow-hidden bg-white/80 flex items-center justify-center border-4 border-white shadow-md">
+    <div className="mx-auto max-w-2xl space-y-5 p-4 pb-28">
+      <section className="rounded-3xl bg-gradient-to-r from-[#FFDAB9] to-[#E6E6FA] p-6">
+        <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-white/80 shadow-md">
           {profilePhoto ? (
             <img
               src={profilePhoto}
-              alt="Foto de perfil"
-              className="w-full h-full object-cover"
+              alt={t('profilePhoto')}
+              className="h-full w-full object-cover"
             />
           ) : (
             <span
               className="text-4xl"
-              aria-label="Avatar de perfil"
+              aria-label={t('profileAvatar')}
             >
               {avatar}
             </span>
@@ -173,29 +173,25 @@ export default function Perfil({
         </div>
 
         <h1 className="mt-4 text-2xl font-bold text-gray-800">
-          Meu Perfil
+          {t('myProfile')}
         </h1>
 
         <p className="mt-1 text-sm leading-6 text-gray-600">
-          Ajuste suas informações para deixar o aplicativo mais útil
-          para a sua rotina.
+          {t('profileIntro')}
         </p>
       </section>
 
-      <section className="bg-white rounded-2xl p-5 shadow-sm">
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
         <div className="flex items-center gap-2">
-          <User className="w-5 h-5 text-[#B8A9C9]" />
+          <User className="h-5 w-5 text-[#B8A9C9]" />
 
           <h2 className="font-bold text-gray-800">
-            Como você prefere ser chamada?
+            {t('preferredNameQuestion')}
           </h2>
         </div>
 
-        <label
-          htmlFor="displayName"
-          className="sr-only"
-        >
-          Nome de preferência
+        <label htmlFor="displayName" className="sr-only">
+          {t('preferredName')}
         </label>
 
         <input
@@ -206,28 +202,27 @@ export default function Perfil({
             setDisplayName(event.target.value);
             setSuccessMessage('');
           }}
-          placeholder="Exemplo: Maria"
+          placeholder={t('preferredNameExample')}
           maxLength={30}
           className="mt-4 w-full rounded-xl border-2 border-[#E6E6FA] bg-white px-4 py-3 text-gray-700 outline-none focus:border-[#B8A9C9]"
         />
 
         <p className="mt-2 text-xs text-gray-500">
-          Use seu primeiro nome ou um apelido, se preferir.
+          {t('preferredNameHelp')}
         </p>
       </section>
 
-      <section className="bg-white rounded-2xl p-5 shadow-sm">
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
         <div className="flex items-center gap-2">
-          <Heart className="w-5 h-5 text-[#FFCBA4] fill-[#FFCBA4]" />
+          <Heart className="h-5 w-5 fill-[#FFCBA4] text-[#FFCBA4]" />
 
           <h2 className="font-bold text-gray-800">
-            Escolha um avatar
+            {t('chooseAvatar')}
           </h2>
         </div>
 
         <p className="mt-2 text-sm text-gray-500">
-          Se não quiser usar uma foto, escolha um avatar para aparecer
-          no seu perfil.
+          {t('chooseAvatarHelp')}
         </p>
 
         <div className="mt-4 grid grid-cols-6 gap-2">
@@ -245,10 +240,10 @@ export default function Perfil({
                 }}
                 className={`h-12 rounded-xl text-2xl transition-all ${
                   isSelected
-                    ? 'bg-[#E6E6FA] ring-2 ring-[#B8A9C9] scale-105'
+                    ? 'scale-105 bg-[#E6E6FA] ring-2 ring-[#B8A9C9]'
                     : 'bg-[#FFF5EE] hover:bg-[#F5F0FF]'
                 }`}
-                aria-label={`Escolher avatar ${avatarOption}`}
+                aria-label={`${t('chooseAvatarAction')} ${avatarOption}`}
                 aria-pressed={isSelected}
               >
                 {avatarOption}
@@ -258,23 +253,22 @@ export default function Perfil({
         </div>
       </section>
 
-      <section className="bg-white rounded-2xl p-5 shadow-sm">
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
         <div className="flex items-center gap-2">
-          <Camera className="w-5 h-5 text-[#B8A9C9]" />
+          <Camera className="h-5 w-5 text-[#B8A9C9]" />
 
           <h2 className="font-bold text-gray-800">
-            Foto de perfil
+            {t('profilePhoto')}
           </h2>
         </div>
 
         <p className="mt-2 text-sm leading-5 text-gray-500">
-          Se preferir, você pode enviar uma foto. Ela ficará salva somente
-          neste dispositivo.
+          {t('profilePhotoHelp')}
         </p>
 
-        <label className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#B8A9C9] px-4 py-3 text-sm font-bold text-[#8B7BA8] cursor-pointer hover:bg-[#F5F0FF] transition-colors">
-          <Image className="w-5 h-5" />
-          Escolher foto de perfil
+        <label className="mt-4 flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#B8A9C9] px-4 py-3 text-sm font-bold text-[#8B7BA8] transition-colors hover:bg-[#F5F0FF]">
+          <Image className="h-5 w-5" />
+          {t('chooseProfilePhoto')}
 
           <input
             type="file"
@@ -285,17 +279,17 @@ export default function Perfil({
         </label>
 
         <p className="mt-2 text-xs text-gray-500">
-          Formatos aceitos: JPG, PNG ou WEBP. Tamanho máximo: 1 MB.
+          {t('acceptedImageFormats')}
         </p>
 
         {profilePhoto && (
           <button
             type="button"
             onClick={removePhoto}
-            className="mt-4 w-full flex items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-100 transition-colors"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-500 transition-colors hover:bg-red-100"
           >
-            <Trash2 className="w-4 h-4" />
-            Remover foto
+            <Trash2 className="h-4 w-4" />
+            {t('removePhoto')}
           </button>
         )}
 
@@ -306,20 +300,19 @@ export default function Perfil({
         )}
       </section>
 
-      <section className="bg-white rounded-2xl p-5 shadow-sm">
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
         <div className="flex items-center justify-between gap-3">
           <div>
             <h2 className="font-bold text-gray-800">
-              Minha rotina
+              {t('myRoutine')}
             </h2>
 
             <p className="mt-1 text-sm text-gray-500">
-              Estas informações ajudam o AMARternar+ a destacar recursos úteis
-              para você.
+              {t('myRoutineHelp')}
             </p>
           </div>
 
-          <Heart className="w-6 h-6 text-[#FFCBA4] fill-[#FFCBA4]" />
+          <Heart className="h-6 w-6 fill-[#FFCBA4] text-[#FFCBA4]" />
         </div>
 
         {profileItems.length > 0 ? (
@@ -327,7 +320,7 @@ export default function Perfil({
             {profileItems.map((item) => (
               <div
                 key={item.label}
-                className="rounded-xl bg-[#FFFDFB] border border-[#F1EEFA] p-4"
+                className="rounded-xl border border-[#F1EEFA] bg-[#FFFDFB] p-4"
               >
                 <p className="text-xs text-gray-500">
                   {item.label}
@@ -341,18 +334,18 @@ export default function Perfil({
           </div>
         ) : (
           <p className="mt-5 rounded-xl bg-[#FFF5EE] p-4 text-sm text-gray-600">
-            Você ainda não informou detalhes da sua rotina.
+            {t('noRoutineDetails')}
           </p>
         )}
 
         <button
           type="button"
           onClick={onEditRoutine}
-          className="mt-5 w-full rounded-xl border-2 border-[#B8A9C9] py-3 font-bold text-[#8B7BA8] hover:bg-[#F5F0FF] transition-colors"
+          className="mt-5 w-full rounded-xl border-2 border-[#B8A9C9] py-3 font-bold text-[#8B7BA8] transition-colors hover:bg-[#F5F0FF]"
         >
           <span className="inline-flex items-center gap-2">
-            <Pencil className="w-4 h-4" />
-            Ajustar minha rotina
+            <Pencil className="h-4 w-4" />
+            {t('adjustRoutine')}
           </span>
         </button>
       </section>
@@ -366,19 +359,18 @@ export default function Perfil({
       <button
         type="button"
         onClick={saveProfile}
-        className="w-full rounded-2xl bg-gradient-to-r from-[#FFCBA4] to-[#B8A9C9] py-4 font-bold text-white shadow-md hover:shadow-lg transition-all"
+        className="w-full rounded-2xl bg-gradient-to-r from-[#FFCBA4] to-[#B8A9C9] py-4 font-bold text-white shadow-md transition-all hover:shadow-lg"
       >
-        Salvar alterações
+        {t('saveChanges')}
       </button>
 
       <section className="rounded-2xl border border-[#E6E6FA] bg-[#F5F0FF] p-4">
         <p className="text-sm font-bold text-gray-700">
-          Suas informações ficam neste dispositivo
+          {t('dataStaysOnDevice')}
         </p>
 
         <p className="mt-1 text-sm leading-6 text-gray-600">
-          O aplicativo usa suas respostas apenas para organizar destaques e
-          sugestões. Você pode alterar essas informações quando quiser.
+          {t('dataStaysOnDeviceDescription')}
         </p>
       </section>
     </div>
