@@ -7,6 +7,8 @@ const translations = {
     map: 'Mapa',
     library: 'Biblioteca',
     pumping: 'Ordenha',
+    diary: 'Diário',
+    tasks: 'Tarefas',
     rights: 'Direitos',
     guest: 'Visitante',
     logout: 'Sair',
@@ -15,6 +17,7 @@ const translations = {
     nextPumping: 'Próxima ordenha estimada',
     quickAccess: 'Acesso Rápido',
     emergencyBtn: 'Emergência',
+    emergency: 'Emergência',
     nearbyPlaces: 'Locais Próximos',
     hospitals: 'Hospitais',
     milkBanks: 'Bancos de Leite',
@@ -56,7 +59,7 @@ const translations = {
     call: 'Ligar',
     login: 'Entrar',
     signup: 'Cadastrar',
-    email: 'Email',
+    email: 'E-mail',
     password: 'Senha',
     name: 'Nome',
     enterAsGuest: 'Entrar como Visitante',
@@ -76,6 +79,18 @@ const translations = {
     publicNursing: 'Amamentação em Público',
     otherRights: 'Outros Direitos',
     faq: 'Perguntas Frequentes',
+    smartCare: 'Cuidados Inteligentes',
+    returnToWork: 'Retorno ao Trabalho',
+    profile: 'Perfil',
+    editProfile: 'Editar perfil',
+    editRoutine: 'Alterar rotina',
+    personalizedRoutine: 'Rotina personalizada',
+    suggestions: 'Sugestões para você',
+    goToDashboard: 'Ir para meu painel',
+    feedback: 'Feedback',
+    support: 'Suporte',
+    help: 'Ajuda',
+    historyPage: 'Nossa história',
   },
 
   en: {
@@ -83,6 +98,8 @@ const translations = {
     map: 'Map',
     library: 'Library',
     pumping: 'Pumping',
+    diary: 'Diary',
+    tasks: 'Tasks',
     rights: 'Rights',
     guest: 'Guest',
     logout: 'Logout',
@@ -91,6 +108,7 @@ const translations = {
     nextPumping: 'Next estimated pumping',
     quickAccess: 'Quick Access',
     emergencyBtn: 'Emergency',
+    emergency: 'Emergency',
     nearbyPlaces: 'Nearby Places',
     hospitals: 'Hospitals',
     milkBanks: 'Milk Banks',
@@ -152,6 +170,18 @@ const translations = {
     publicNursing: 'Public Nursing',
     otherRights: 'Other Rights',
     faq: 'FAQ',
+    smartCare: 'Smart Care',
+    returnToWork: 'Return to Work',
+    profile: 'Profile',
+    editProfile: 'Edit profile',
+    editRoutine: 'Change routine',
+    personalizedRoutine: 'Personalized routine',
+    suggestions: 'Suggestions for you',
+    goToDashboard: 'Go to my dashboard',
+    feedback: 'Feedback',
+    support: 'Support',
+    help: 'Help',
+    historyPage: 'Our story',
   },
 };
 
@@ -270,9 +300,10 @@ export const useStore = create(
 
             routine: {
               workType: '',
-              shift: '',
-              babyInDaycare: '',
-              priorities: [],
+              schedule: '',
+              babyCare: '',
+              priority: '',
+              wantsTutorial: true,
             },
 
             onboarding: {
@@ -368,7 +399,11 @@ export const useStore = create(
 
         const intervals = [];
 
-        for (let index = 0; index < Math.min(records.length - 1, 5); index += 1) {
+        for (
+          let index = 0;
+          index < Math.min(records.length - 1, 5);
+          index += 1
+        ) {
           intervals.push(
             new Date(records[index].date) -
               new Date(records[index + 1].date)
