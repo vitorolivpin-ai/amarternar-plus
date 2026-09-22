@@ -1,4 +1,3 @@
-```jsx
 import { useEffect, useState } from 'react';
 
 import {
@@ -160,8 +159,9 @@ function Suggestions({ profile, onContinue, onNavigate }) {
           </p>
 
           <h1 className="mt-2 text-2xl font-bold text-slate-800">
-            Sugestões para você
-            {profile?.displayName ? `, ${profile.displayName}` : ''}
+            {`Sugestões para você${
+              profile?.displayName ? `, ${profile.displayName}` : ''
+            }`}
           </h1>
 
           <p className="mt-3 leading-6 text-slate-600">
@@ -539,4 +539,3 @@ export default function App() {
     </div>
   );
 }
-```
