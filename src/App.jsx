@@ -1,3 +1,4 @@
+```jsx
 import { useEffect, useState } from 'react';
 
 import {
@@ -57,7 +58,7 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     },
   ];
 
-  if (routine.workType === 'clt' || routine.workType === 'CLT') {
+  if (routine.workType === 'clt') {
     suggestions.unshift({
       id: 'retorno',
       icon: BriefcaseBusiness,
@@ -69,11 +70,11 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     });
   }
 
-  if (routine.shift === 'noturno' || routine.shift === 'night') {
+  if (routine.schedule === 'noite' || routine.schedule === '12x36') {
     suggestions.push({
       id: 'turno',
       icon: CalendarHeart,
-      title: 'Planeje sua rotina para o turno noturno',
+      title: 'Planeje sua rotina para horários diferentes',
       description:
         'Organize tarefas e registros de ordenha de acordo com os horários que funcionam melhor para você.',
       tab: 'tarefas',
@@ -81,11 +82,7 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     });
   }
 
-  if (
-    routine.babyInDaycare === 'sim' ||
-    routine.babyInDaycare === 'yes' ||
-    routine.babyInDaycare === true
-  ) {
+  if (routine.babyCare === 'creche') {
     suggestions.push({
       id: 'creche',
       icon: CalendarHeart,
@@ -97,9 +94,57 @@ function Suggestions({ profile, onContinue, onNavigate }) {
     });
   }
 
+  if (routine.priority === 'retorno') {
+    suggestions.unshift({
+      id: 'prioridade-retorno',
+      icon: BriefcaseBusiness,
+      title: 'Seu foco é o retorno ao trabalho',
+      description:
+        'Comece pelo guia de retorno ao trabalho e adapte o checklist à sua realidade.',
+      tab: 'retorno',
+      color: 'bg-[#F0ECFF] text-[#8D7AB8]',
+    });
+  }
+
+  if (routine.priority === 'direitos') {
+    suggestions.unshift({
+      id: 'prioridade-direitos',
+      icon: Scale,
+      title: 'Conheça seus direitos como lactante',
+      description:
+        'Acesse orientações sobre direitos trabalhistas, benefícios e atendimento prioritário.',
+      tab: 'direitos',
+      color: 'bg-[#FFF6DB] text-[#B79036]',
+    });
+  }
+
+  if (routine.priority === 'mapa') {
+    suggestions.unshift({
+      id: 'prioridade-mapa',
+      icon: MapPin,
+      title: 'Encontre apoio perto de você',
+      description:
+        'Use o mapa para localizar hospitais, UBS, bancos de leite e outros serviços de apoio.',
+      tab: 'mapa',
+      color: 'bg-[#EEF8EF] text-[#6B9E73]',
+    });
+  }
+
+  if (routine.priority === 'cuidados') {
+    suggestions.unshift({
+      id: 'prioridade-cuidados',
+      icon: Heart,
+      title: 'Reserve um momento para seus cuidados',
+      description:
+        'Veja checklists e sugestões de organização para apoiar você e o bebê.',
+      tab: 'cuidados',
+      color: 'bg-[#FCEEF5] text-[#C8789E]',
+    });
+  }
+
   function handleSuggestionClick(tab) {
     onNavigate(tab);
-    onContinue();
+    onContinue(tab);
   }
 
   return (
@@ -115,7 +160,8 @@ function Suggestions({ profile, onContinue, onNavigate }) {
           </p>
 
           <h1 className="mt-2 text-2xl font-bold text-slate-800">
-            Sugestões para você{profile?.displayName ? `, ${profile.displayName}` : ''}
+            Sugestões para você
+            {profile?.displayName ? `, ${profile.displayName}` : ''}
           </h1>
 
           <p className="mt-3 leading-6 text-slate-600">
@@ -158,7 +204,7 @@ function Suggestions({ profile, onContinue, onNavigate }) {
 
           <button
             type="button"
-            onClick={onContinue}
+            onClick={() => onContinue('home')}
             className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-[#B8A9C9] px-4 py-4 font-semibold text-white transition hover:bg-[#A194B4]"
           >
             Ir para meu painel
@@ -222,6 +268,7 @@ export default function App() {
     const profileToSave = {
       ...profile,
       ...updatedProfile,
+
       routine: {
         ...profile?.routine,
         ...updatedProfile?.routine,
@@ -234,7 +281,7 @@ export default function App() {
         JSON.stringify(profileToSave)
       );
     } catch (error) {
-      // O estado continua atualizado mesmo se o navegador não permitir salvar.
+      // Mantém os dados no estado mesmo se o navegador bloquear o localStorage.
     }
 
     setProfile(profileToSave);
@@ -252,6 +299,7 @@ export default function App() {
     const updatedProfile = {
       ...profile,
       ...onboardingData,
+
       routine: {
         ...profile?.routine,
         ...onboardingData?.routine,
@@ -260,14 +308,14 @@ export default function App() {
 
     handleProfileSave(updatedProfile);
 
-    saveRoutine(updatedProfile.routine || onboardingData.routine || {});
+    saveRoutine(updatedProfile.routine);
     setShowOnboarding(false);
     setActiveTab('home');
   }
 
-  function handleFinishSuggestions() {
+  function handleFinishSuggestions(tab = 'home') {
     finishSuggestions();
-    setActiveTab('home');
+    setActiveTab(tab);
   }
 
   function handleSuggestionsNavigate(tab) {
@@ -279,7 +327,13 @@ export default function App() {
   }
 
   if (showOnboarding) {
-    return <Onboarding onComplete={handleOnboardingComplete} />;
+    return (
+      <Onboarding
+        profile={profile}
+        onComplete={handleOnboardingComplete}
+        onCancel={() => setShowOnboarding(false)}
+      />
+    );
   }
 
   if (showSuggestions) {
@@ -427,7 +481,9 @@ export default function App() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto pb-20">{renderContent()}</main>
+      <main className="flex-1 overflow-auto pb-20">
+        {renderContent()}
+      </main>
 
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/95 px-2 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.08)] backdrop-blur-sm">
         <div className="mx-auto flex max-w-lg items-center justify-around">
@@ -454,7 +510,9 @@ export default function App() {
                   }`}
                 />
 
-                <span className="text-xs font-medium">{tab.label}</span>
+                <span className="text-xs font-medium">
+                  {tab.label}
+                </span>
               </button>
             );
           })}
@@ -481,3 +539,4 @@ export default function App() {
     </div>
   );
 }
+```
