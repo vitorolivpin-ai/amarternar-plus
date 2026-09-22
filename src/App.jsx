@@ -1,38 +1,38 @@
 import { useEffect, useState } from 'react';
 
 import {
+  ArrowRight,
+  BookOpen,
+  Briefcase,
+  Calendar,
+  ClipboardList,
+  Droplets,
+  Globe,
   Heart,
   Home,
-  MapPin,
   LayoutGrid,
-  BookOpen,
-  Droplets,
-  LogOut,
-  User,
-  Globe,
-  Scale,
   Lightbulb,
-  Briefcase,
-  ClipboardList,
-  Calendar,
-  ArrowRight,
+  LogOut,
+  MapPin,
+  Scale,
+  User,
 } from 'lucide-react';
 
 import { useStore } from './store';
 
-import Dashboard from './components/Dashboard';
-import MapaLocais from './components/MapaLocais';
-import Tarefas from './components/Tarefas';
 import Biblioteca from './components/Biblioteca';
-import Ordenha from './components/Ordenha';
+import CuidadosInteligentes from './components/CuidadosInteligentes';
+import Dashboard from './components/Dashboard';
+import Direitos from './components/Direitos';
 import Emergencias from './components/Emergencias';
 import Login from './components/Login';
-import Direitos from './components/Direitos';
-import CuidadosInteligentes from './components/CuidadosInteligentes';
-import RetornoTrabalho from './components/RetornoTrabalho';
+import MapaLocais from './components/MapaLocais';
 import Onboarding from './components/Onboarding';
+import Ordenha from './components/Ordenha';
 import Perfil from './components/Perfil';
 import Privacidade from './components/Privacidade';
+import RetornoTrabalho from './components/RetornoTrabalho';
+import Tarefas from './components/Tarefas';
 
 function Suggestions({ profile, onContinue, onNavigate, language }) {
   const routine = profile?.routine || {};
@@ -330,45 +330,58 @@ export default function App() {
   }, [showSuggestions]);
 
   function handleProfileSave(updatedProfile) {
-  const profileToSave = {
-    ...profile,
-    ...updatedProfile,
+    const profileToSave = {
+      ...profile,
+      ...updatedProfile,
 
-    profile: {
-      ...profile?.profile,
-      ...updatedProfile?.profile,
-    },
+      profile: {
+        ...profile?.profile,
+        ...updatedProfile?.profile,
+      },
 
-    routine: {
-      ...profile?.routine,
-      ...updatedProfile?.routine,
-    },
+      routine: {
+        ...profile?.routine,
+        ...updatedProfile?.routine,
+      },
 
-    onboarding: {
-      ...profile?.onboarding,
-      ...updatedProfile?.onboarding,
-    },
+      onboarding: {
+        ...profile?.onboarding,
+        ...updatedProfile?.onboarding,
+      },
 
-    privacyConsent: {
-      ...profile?.privacyConsent,
-      ...updatedProfile?.privacyConsent,
-    },
-  };
+      privacyConsent: {
+        ...profile?.privacyConsent,
+        ...updatedProfile?.privacyConsent,
+      },
+    };
 
-  try {
-    localStorage.setItem(
-      'amarternar_profile',
-      JSON.stringify(profileToSave)
-    );
-  } catch (error) {
-    // Mantém os dados no estado mesmo se o navegador bloquear o localStorage.
+    try {
+      localStorage.setItem(
+        'amarternar_profile',
+        JSON.stringify(profileToSave)
+      );
+    } catch (error) {
+      // Mantém os dados no estado mesmo se o navegador bloquear o localStorage.
+    }
+
+    setProfile(profileToSave);
   }
-
-  setProfile(profileToSave);
-}
 
   function openProfile() {
     setActiveTab('perfil');
+  }
+
+  function handleLogout() {
+    logout();
+
+    localStorage.removeItem('amarternar_profile');
+    localStorage.removeItem('amarternar-storage');
+
+    setProfile(null);
+    setShowOnboarding(true);
+    setActiveTab('home');
+
+    window.location.reload();
   }
 
   function openRoutineEditor() {
@@ -379,9 +392,20 @@ export default function App() {
     const updatedProfile = {
       ...profile,
       ...onboardingData,
+
       routine: {
         ...profile?.routine,
         ...onboardingData?.routine,
+      },
+
+      onboarding: {
+        ...profile?.onboarding,
+        ...onboardingData?.onboarding,
+      },
+
+      privacyConsent: {
+        ...profile?.privacyConsent,
+        ...onboardingData?.privacyConsent,
       },
     };
 
@@ -396,30 +420,30 @@ export default function App() {
     setActiveTab(tab);
   }
 
- function handleSuggestionsNavigate(tab) {
-  setActiveTab(tab);
-}
+  function handleSuggestionsNavigate(tab) {
+    setActiveTab(tab);
+  }
 
-function handleDeleteAllData() {
-  localStorage.removeItem('amarternar-storage');
-  localStorage.removeItem('amarternar_profile');
+  function handleDeleteAllData() {
+    localStorage.removeItem('amarternar-storage');
+    localStorage.removeItem('amarternar_profile');
 
-  window.location.reload();
-}
+    window.location.reload();
+  }
 
-if (!isLoggedIn) {
-  return <Login />;
-}
+  if (!isLoggedIn) {
+    return <Login />;
+  }
 
-if (showOnboarding) {
-  return (
-    <Onboarding
-      profile={profile}
-      onComplete={handleOnboardingComplete}
-      onCancel={() => setShowOnboarding(false)}
-    />
-  );
-}
+  if (showOnboarding) {
+    return (
+      <Onboarding
+        profile={profile}
+        onComplete={handleOnboardingComplete}
+        onCancel={() => setShowOnboarding(false)}
+      />
+    );
+  }
 
   if (showSuggestions) {
     return (
@@ -480,6 +504,16 @@ if (showOnboarding) {
             profile={profile}
             onSave={handleProfileSave}
             onEditRoutine={openRoutineEditor}
+            onNavigate={setActiveTab}
+          />
+        );
+
+      case 'privacidade':
+        return (
+          <Privacidade
+            profile={profile}
+            onBack={() => setActiveTab('perfil')}
+            onDeleteData={handleDeleteAllData}
           />
         );
 
@@ -556,7 +590,7 @@ if (showOnboarding) {
 
           <button
             type="button"
-            onClick={logout}
+            onClick={handleLogout}
             className="rounded-full p-2 transition-colors hover:bg-red-50"
             title={t('logout')}
             aria-label={t('logout')}
@@ -615,7 +649,7 @@ if (showOnboarding) {
             onClick={(event) => event.stopPropagation()}
             role="dialog"
             aria-modal="true"
-            aria-label="Emergências"
+            aria-label={t('emergencyNumbers')}
           >
             <Emergencias onClose={() => setShowEmergencias(false)} />
           </div>
