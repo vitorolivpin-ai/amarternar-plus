@@ -17,6 +17,9 @@ import { supabase } from '../supabaseClient';
 
 const SITE_URL = 'https://amarternar-plus.vercel.app';
 
+const EXAMPLE_EMAIL_PT = 'nome' + '@' + 'exemplo.com';
+const EXAMPLE_EMAIL_EN = 'name' + '@' + 'example.com';
+
 function isValidEmail(email) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
 }
@@ -27,7 +30,7 @@ export default function Login() {
 
   const text = isEnglish
     ? {
-        invalidEmail: 'Enter a valid email, like name@example.com.',
+        invalidEmail: `Enter a valid email, like ${EXAMPLE_EMAIL_EN}.`,
         shortPassword: 'Your password must have at least 6 characters.',
         wrongCredentials: 'Incorrect email or password.',
         notConfirmed: 'Confirm your email before signing in.',
@@ -45,7 +48,7 @@ export default function Login() {
         back: 'Back to sign in',
       }
     : {
-        invalidEmail: 'Digite um e-mail válido, como nome@exemplo.com.',
+        invalidEmail: `Digite um e-mail válido, como ${EXAMPLE_EMAIL_PT}.`,
         shortPassword: 'A senha precisa ter pelo menos 6 caracteres.',
         wrongCredentials: 'E-mail ou senha incorretos.',
         notConfirmed: 'Confirme seu e-mail antes de entrar.',
