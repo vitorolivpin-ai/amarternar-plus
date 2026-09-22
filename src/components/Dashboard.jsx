@@ -19,7 +19,12 @@ export default function Dashboard({
   onNavigate,
   onEmergencia,
 }) {
-  const { user, t, ordenhaRecords, getNextPumpingEstimate } = useStore();
+  const {
+    user,
+    t,
+    ordenhaRecords,
+    getNextPumpingEstimate,
+  } = useStore();
 
   const displayName = profile?.displayName || user?.name || t('guest');
 
@@ -29,7 +34,9 @@ export default function Dashboard({
   const formatTimeAgo = (date) => {
     const diff = new Date() - new Date(date);
     const hours = Math.floor(diff / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const mins = Math.floor(
+      (diff % (1000 * 60 * 60)) / (1000 * 60)
+    );
 
     return hours > 0
       ? `${hours}${t('hours')} ${mins}${t('minutes')} ${t('ago')}`
@@ -40,11 +47,13 @@ export default function Dashboard({
     const diff = new Date(date) - new Date();
 
     if (diff < 0) {
-      return 'Agora!';
+      return t('now');
     }
 
     const hours = Math.floor(diff / (1000 * 60 * 60));
-    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const mins = Math.floor(
+      (diff % (1000 * 60 * 60)) / (1000 * 60)
+    );
 
     return hours > 0
       ? `${t('in')} ${hours}${t('hours')} ${mins}${t('minutes')}`
@@ -62,7 +71,7 @@ export default function Dashboard({
     {
       id: 'tarefas',
       icon: LayoutGrid,
-      label: 'Tarefas',
+      label: t('tasks'),
       color: 'from-[#E6E6FA] to-[#DCD0FF]',
       iconColor: 'text-purple-400',
     },
@@ -83,51 +92,51 @@ export default function Dashboard({
     {
       id: 'cuidados',
       icon: Sparkles,
-      label: 'Cuidados Inteligentes',
+      label: t('smartCare'),
       color: 'from-[#DFF7F0] to-[#C8EFE4]',
       iconColor: 'text-emerald-500',
     },
     {
       id: 'retorno',
       icon: Heart,
-      label: 'Retorno ao Trabalho',
+      label: t('returnToWork'),
       color: 'from-[#EDE9FE] to-[#D8CFF5]',
       iconColor: 'text-indigo-500',
     },
     {
       id: 'ordenha',
       icon: Droplets,
-      label: 'Diário de Ordenha',
+      label: t('pumpingDiary'),
       color: 'from-[#FFF0F5] to-[#FFD6E7]',
       iconColor: 'text-pink-500',
     },
   ];
 
   return (
-    <div className="p-4 space-y-6">
-      <div className="bg-gradient-to-r from-[#FFDAB9]/40 to-[#E6E6FA]/40 rounded-2xl p-5 shadow-sm">
+    <div className="space-y-6 p-4">
+      <div className="rounded-2xl bg-gradient-to-r from-[#FFDAB9]/40 to-[#E6E6FA]/40 p-5 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-14 h-14 rounded-full overflow-hidden bg-white flex items-center justify-center shadow-md border-2 border-white">
+          <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-full border-2 border-white bg-white shadow-md">
             {profile?.profilePhoto ? (
               <img
                 src={profile.profilePhoto}
-                alt={`Foto de ${displayName}`}
-                className="w-full h-full object-cover"
+                alt={`${t('profilePhotoOf')} ${displayName}`}
+                className="h-full w-full object-cover"
               />
             ) : profile?.avatar ? (
               <span
                 className="text-2xl"
-                aria-label={`Avatar de ${displayName}`}
+                aria-label={`${t('avatarOf')} ${displayName}`}
               >
                 {profile.avatar}
               </span>
             ) : (
-              <Baby className="w-8 h-8 text-[#FFCBA4]" />
+              <Baby className="h-8 w-8 text-[#FFCBA4]" />
             )}
           </div>
 
           <div>
-            <p className="text-gray-500 text-base">
+            <p className="text-base text-gray-500">
               {t('welcome')},
             </p>
 
@@ -139,54 +148,53 @@ export default function Dashboard({
       </div>
 
       {lastRecord && (
-        <div className="bg-white rounded-2xl p-5 shadow-sm border border-[#E6E6FA]/30">
-          <div className="flex items-center gap-2 mb-4">
-            <Droplets className="w-5 h-5 text-[#B8A9C9]" />
+        <div className="rounded-2xl border border-[#E6E6FA]/30 bg-white p-5 shadow-sm">
+          <div className="mb-4 flex items-center gap-2">
+            <Droplets className="h-5 w-5 text-[#B8A9C9]" />
 
-            <h3 className="font-semibold text-gray-700 text-base">
+            <h3 className="text-base font-semibold text-gray-700">
               {t('lastPumping')}
             </h3>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-[#FFF5EE] rounded-xl p-3">
+            <div className="rounded-xl bg-[#FFF5EE] p-3">
               <p className="text-sm text-gray-500">
                 {t('duration')}
               </p>
 
               <p className="text-lg font-bold text-[#FFCBA4]">
-                {lastRecord.duration} min
+                {lastRecord.duration} {t('minutes')}
               </p>
             </div>
 
-            <div className="bg-[#F5F0FF] rounded-xl p-3">
+            <div className="rounded-xl bg-[#F5F0FF] p-3">
               <p className="text-sm text-gray-500">
                 {t('quantity')}
               </p>
 
               <p className="text-lg font-bold text-[#B8A9C9]">
-                {lastRecord.quantity || '-'} ml
+                {lastRecord.quantity || '-'} {t('milliliters')}
               </p>
             </div>
           </div>
 
-          <div className="mt-3 flex items-center gap-2 text-gray-500 text-base">
-            <Clock className="w-4 h-4" />
-
+          <div className="mt-3 flex items-center gap-2 text-base text-gray-500">
+            <Clock className="h-4 w-4" />
             <span>{formatTimeAgo(lastRecord.date)}</span>
           </div>
 
           {nextEstimate && (
-            <div className="mt-4 bg-gradient-to-r from-[#FFDAB9]/20 to-[#E6E6FA]/20 rounded-xl p-3 border border-dashed border-[#DCD0FF]">
+            <div className="mt-4 rounded-xl border border-dashed border-[#DCD0FF] bg-gradient-to-r from-[#FFDAB9]/20 to-[#E6E6FA]/20 p-3">
               <div className="flex items-center gap-2">
-                <Clock className="w-5 h-5 text-[#B8A9C9]" />
+                <Clock className="h-5 w-5 text-[#B8A9C9]" />
 
                 <div>
                   <p className="text-sm text-gray-500">
                     {t('nextPumping')}
                   </p>
 
-                  <p className="font-semibold text-[#B8A9C9] text-base">
+                  <p className="text-base font-semibold text-[#B8A9C9]">
                     {formatTimeUntil(nextEstimate)}
                   </p>
                 </div>
@@ -197,8 +205,8 @@ export default function Dashboard({
       )}
 
       <div>
-        <h3 className="font-semibold text-gray-700 mb-3 flex items-center gap-2 text-base">
-          <Heart className="w-4 h-4 text-[#FFCBA4]" />
+        <h3 className="mb-3 flex items-center gap-2 text-base font-semibold text-gray-700">
+          <Heart className="h-4 w-4 text-[#FFCBA4]" />
           {t('quickAccess')}
         </h3>
 
@@ -211,13 +219,13 @@ export default function Dashboard({
                 key={item.id}
                 type="button"
                 onClick={() => onNavigate(item.id)}
-                className={`bg-gradient-to-br ${item.color} p-4 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02] flex flex-col items-center gap-2 min-h-[120px]`}
+                className={`flex min-h-[120px] flex-col items-center gap-2 rounded-2xl bg-gradient-to-br ${item.color} p-4 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md`}
               >
-                <div className="w-12 h-12 bg-white/80 rounded-xl flex items-center justify-center">
-                  <Icon className={`w-6 h-6 ${item.iconColor}`} />
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/80">
+                  <Icon className={`h-6 w-6 ${item.iconColor}`} />
                 </div>
 
-                <span className="font-medium text-gray-700 text-center text-base">
+                <span className="text-center text-base font-medium text-gray-700">
                   {item.label}
                 </span>
               </button>
@@ -229,17 +237,17 @@ export default function Dashboard({
       <button
         type="button"
         onClick={onEmergencia}
-        className="w-full bg-gradient-to-r from-red-400 to-red-500 text-white p-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-3 hover:scale-[1.01]"
+        className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-red-400 to-red-500 p-4 text-white shadow-lg transition-all duration-200 hover:scale-[1.01] hover:shadow-xl"
       >
-        <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-          <Phone className="w-5 h-5" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20">
+          <Phone className="h-5 w-5" />
         </div>
 
-        <span className="font-bold text-lg">
+        <span className="text-lg font-bold">
           {t('emergencyBtn')}
         </span>
 
-        <AlertTriangle className="w-5 h-5 animate-pulse" />
+        <AlertTriangle className="h-5 w-5 animate-pulse" />
       </button>
     </div>
   );
