@@ -109,10 +109,19 @@ const translations = {
     step: 'Etapa',
     of: 'de',
     back: 'Voltar',
-    continue: 'Continuar',
+        continue: 'Continuar',
     viewSuggestions: 'Ver minhas sugestões',
     cancelChange: 'Cancelar alteração',
     skipForNow: 'Pular por enquanto',
+
+    privacyConsentTitle: 'Privacidade e uso dos dados',
+    privacyConsentDescription:
+      'Antes de começar, leia como o AMARternar+ utiliza as informações inseridas por você.',
+    privacyConsentCheckbox:
+      'Li a Política de Privacidade e estou ciente de que o AMARternar+ pode armazenar localmente neste dispositivo dados de perfil, rotina, tarefas e registros inseridos por mim, exclusivamente para personalizar e organizar minha experiência no aplicativo.',
+    privacyConsentNotice:
+      'Você pode apagar os dados locais ou revogar esse aceite a qualquer momento em Perfil → Privacidade e dados.',
+    startUsingApp: 'Começar a usar o AMARternar+',
 
     onboardingWorkTitle: 'Como está sua rotina de trabalho hoje?',
     onboardingWorkSubtitle: 'Escolha a opção que mais combina com você.',
@@ -659,10 +668,19 @@ const translations = {
     step: 'Step',
     of: 'of',
     back: 'Back',
-    continue: 'Continue',
+        continue: 'Continue',
     viewSuggestions: 'View my suggestions',
     cancelChange: 'Cancel changes',
     skipForNow: 'Skip for now',
+
+    privacyConsentTitle: 'Privacy and data use',
+    privacyConsentDescription:
+      'Before getting started, please read how AMARternar+ uses the information you enter.',
+    privacyConsentCheckbox:
+      'I have read the Privacy Policy and understand that AMARternar+ may store profile, routine, task, and record data locally on this device solely to personalize and organize my app experience.',
+    privacyConsentNotice:
+      'You can delete local data or withdraw this consent at any time in Profile → Privacy and data.',
+    startUsingApp: 'Start using AMARternar+',
 
     onboardingWorkTitle: 'What is your work routine like today?',
     onboardingWorkSubtitle:
@@ -1179,19 +1197,28 @@ export const useStore = create(
           user: {
             ...state.user,
             ...userData,
+
             profile: {
               ...state.user?.profile,
               ...userData?.profile,
             },
+
             routine: {
               ...state.user?.routine,
               ...userData?.routine,
             },
+
             onboarding: {
               ...state.user?.onboarding,
               ...userData?.onboarding,
             },
+
+            privacyConsent: {
+              ...state.user?.privacyConsent,
+              ...userData?.privacyConsent,
+            },
           },
+
           isLoggedIn: true,
         })),
 
@@ -1205,6 +1232,7 @@ export const useStore = create(
         set((state) => ({
           user: {
             ...state.user,
+
             profile: {
               ...state.user?.profile,
               ...profileData,
@@ -1216,6 +1244,7 @@ export const useStore = create(
         set((state) => ({
           user: {
             ...state.user,
+
             routine: {
               workType: '',
               schedule: '',
@@ -1223,6 +1252,7 @@ export const useStore = create(
               priority: '',
               wantsTutorial: true,
             },
+
             onboarding: {
               ...state.user?.onboarding,
               routineCompleted: false,
@@ -1235,10 +1265,12 @@ export const useStore = create(
         set((state) => ({
           user: {
             ...state.user,
+
             routine: {
               ...state.user?.routine,
               ...routineData,
             },
+
             onboarding: {
               ...state.user?.onboarding,
               routineCompleted: true,
@@ -1251,6 +1283,7 @@ export const useStore = create(
         set((state) => ({
           user: {
             ...state.user,
+
             onboarding: {
               ...state.user?.onboarding,
               showSuggestions: false,
