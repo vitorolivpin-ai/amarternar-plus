@@ -1,21 +1,30 @@
 import {
-  ShieldCheck,
-  Database,
-  UserRound,
-  ClipboardList,
-  Droplets,
-  Globe,
-  Trash2,
   AlertTriangle,
-  ChevronRight,
+  ArrowLeft,
+  Database,
+  FileText,
+  ShieldCheck,
+  Trash2,
 } from 'lucide-react';
 
 import { useStore } from '../store';
 
-export default function Privacidade({ onBack }) {
+export default function Privacidade({
+  profile,
+  onBack,
+  onDeleteData,
+}) {
   const t = useStore((state) => state.t);
 
-  function handleDeleteData() {
+  const acceptedAt = profile?.privacyConsent?.acceptedAt;
+
+  const acceptedDate = acceptedAt
+    ? new Date(acceptedAt).toLocaleDateString(
+        t('privacyDateLocale')
+      )
+    : t('privacyNoConsentDate');
+
+  function handleDelete() {
     const confirmed = window.confirm(
       t('privacyDeleteConfirmation')
     );
@@ -24,42 +33,12 @@ export default function Privacidade({ onBack }) {
       return;
     }
 
-    localStorage.removeItem('amarternar_profile');
-    localStorage.removeItem('amarternar-storage');
-
-    window.location.reload();
+    onDeleteData?.();
   }
-
-  const dataItems = [
-    {
-      icon: UserRound,
-      title: t('privacyProfileDataTitle'),
-      description: t('privacyProfileDataDescription'),
-      color: 'bg-[#FFF0F5] text-pink-500',
-    },
-    {
-      icon: ClipboardList,
-      title: t('privacyRoutineDataTitle'),
-      description: t('privacyRoutineDataDescription'),
-      color: 'bg-[#E6E6FA] text-[#8B7BA8]',
-    },
-    {
-      icon: Droplets,
-      title: t('privacyPumpingDataTitle'),
-      description: t('privacyPumpingDataDescription'),
-      color: 'bg-[#E8F6FF] text-[#62A6C8]',
-    },
-    {
-      icon: Globe,
-      title: t('privacyPreferencesTitle'),
-      description: t('privacyPreferencesDescription'),
-      color: 'bg-[#FFF4D8] text-amber-600',
-    },
-  ];
 
   return (
     <div className="mx-auto max-w-2xl space-y-5 p-4 pb-28">
-      <section className="rounded-3xl bg-gradient-to-br from-[#B8A9C9] to-[#DCD0FF] p-6 text-white shadow-sm">
+      <section className="rounded-3xl bg-gradient-to-r from-[#B8A9C9] to-[#DCD0FF] p-6 text-white">
         <div className="flex items-center gap-3">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/20">
             <ShieldCheck className="h-7 w-7" />
@@ -82,47 +61,30 @@ export default function Privacidade({ onBack }) {
       </section>
 
       <section className="rounded-2xl bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-bold text-gray-800">
-          {t('privacyWhatDataTitle')}
-        </h2>
+        <div className="flex items-center gap-2">
+          <FileText className="h-5 w-5 text-[#8B7BA8]" />
 
-        <p className="mt-2 text-sm leading-6 text-gray-600">
-          {t('privacyWhatDataDescription')}
+          <h2 className="text-lg font-bold text-gray-800">
+            {t('privacyDataCollectedTitle')}
+          </h2>
+        </div>
+
+        <p className="mt-3 text-sm leading-6 text-gray-600">
+          {t('privacyDataCollectedDescription')}
         </p>
 
-        <div className="mt-5 space-y-3">
-          {dataItems.map((item) => {
-            const Icon = item.icon;
-
-            return (
-              <div
-                key={item.title}
-                className="flex items-start gap-3 rounded-xl border border-[#F1EEFA] bg-[#FFFDFB] p-4"
-              >
-                <div
-                  className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${item.color}`}
-                >
-                  <Icon className="h-5 w-5" />
-                </div>
-
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-800">
-                    {item.title}
-                  </h3>
-
-                  <p className="mt-1 text-sm leading-5 text-gray-600">
-                    {item.description}
-                  </p>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <ul className="mt-4 space-y-2 text-sm leading-6 text-gray-600">
+          <li>• {t('privacyDataProfile')}</li>
+          <li>• {t('privacyDataRoutine')}</li>
+          <li>• {t('privacyDataTasks')}</li>
+          <li>• {t('privacyDataPumping')}</li>
+          <li>• {t('privacyDataPreferences')}</li>
+        </ul>
       </section>
 
       <section className="rounded-2xl bg-white p-5 shadow-sm">
         <div className="flex items-center gap-2">
-          <Database className="h-5 w-5 text-[#B8A9C9]" />
+          <Database className="h-5 w-5 text-[#8B7BA8]" />
 
           <h2 className="text-lg font-bold text-gray-800">
             {t('privacyStorageTitle')}
@@ -139,21 +101,11 @@ export default function Privacidade({ onBack }) {
           {t('privacyPurposeTitle')}
         </h2>
 
-        <ul className="mt-3 space-y-3">
-          {[
-            t('privacyPurpose1'),
-            t('privacyPurpose2'),
-            t('privacyPurpose3'),
-            t('privacyPurpose4'),
-          ].map((purpose) => (
-            <li
-              key={purpose}
-              className="flex items-start gap-2 text-sm leading-5 text-gray-600"
-            >
-              <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-[#B8A9C9]" />
-              {purpose}
-            </li>
-          ))}
+        <ul className="mt-3 space-y-2 text-sm leading-6 text-gray-600">
+          <li>• {t('privacyPurpose1')}</li>
+          <li>• {t('privacyPurpose2')}</li>
+          <li>• {t('privacyPurpose3')}</li>
+          <li>• {t('privacyPurpose4')}</li>
         </ul>
       </section>
 
@@ -174,43 +126,63 @@ export default function Privacidade({ onBack }) {
       </section>
 
       <section className="rounded-2xl bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-bold text-gray-800">
-          {t('privacyRightsTitle')}
-        </h2>
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="h-5 w-5 text-[#8B7BA8]" />
 
-        <p className="mt-2 text-sm leading-6 text-gray-600">
-          {t('privacyRightsDescription')}
+          <h2 className="text-lg font-bold text-gray-800">
+            {t('privacyConsentStatusTitle')}
+          </h2>
+        </div>
+
+        <p className="mt-3 text-sm leading-6 text-gray-600">
+          {profile?.privacyConsent?.accepted
+            ? t('privacyConsentAccepted')
+            : t('privacyConsentNotAccepted')}
         </p>
+
+        <p className="mt-2 text-xs text-gray-500">
+          {t('privacyConsentDate')}: {acceptedDate}
+        </p>
+
+        <p className="mt-1 text-xs text-gray-500">
+          {t('privacyPolicyVersion')}:{' '}
+          {profile?.privacyConsent?.policyVersion || '1.0'}
+        </p>
+      </section>
+
+      <section className="rounded-2xl border border-red-200 bg-red-50 p-5">
+        <div className="flex items-start gap-3">
+          <Trash2 className="mt-0.5 h-5 w-5 shrink-0 text-red-600" />
+
+          <div>
+            <h2 className="text-base font-bold text-red-800">
+              {t('privacyDeleteTitle')}
+            </h2>
+
+            <p className="mt-1 text-sm leading-6 text-red-700">
+              {t('privacyDeleteDescription')}
+            </p>
+          </div>
+        </div>
 
         <button
           type="button"
-          onClick={handleDeleteData}
-          className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-600 transition-colors hover:bg-red-100"
+          onClick={handleDelete}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-bold text-white transition-colors hover:bg-red-700"
         >
           <Trash2 className="h-4 w-4" />
           {t('privacyDeleteButton')}
         </button>
       </section>
 
-      <section className="rounded-2xl border border-[#E6E6FA] bg-[#F5F0FF] p-4">
-        <p className="text-sm font-bold text-gray-700">
-          {t('privacyLegalTitle')}
-        </p>
-
-        <p className="mt-1 text-sm leading-6 text-gray-600">
-          {t('privacyLegalDescription')}
-        </p>
-      </section>
-
-      {onBack && (
-        <button
-          type="button"
-          onClick={onBack}
-          className="w-full rounded-xl border-2 border-[#B8A9C9] py-3 text-sm font-bold text-[#8B7BA8] transition-colors hover:bg-[#F5F0FF]"
-        >
-          {t('back')}
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={onBack}
+        className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-[#B8A9C9] py-3 text-sm font-bold text-[#8B7BA8] transition-colors hover:bg-[#F5F0FF]"
+      >
+        <ArrowLeft className="h-4 w-4" />
+        {t('backToProfile')}
+      </button>
     </div>
   );
 }
