@@ -114,14 +114,25 @@ const translations = {
     cancelChange: 'Cancelar alteração',
     skipForNow: 'Pular por enquanto',
 
-    privacyConsentTitle: 'Privacidade e uso dos dados',
-    privacyConsentDescription:
-      'Antes de começar, leia como o AMARternar+ utiliza as informações inseridas por você.',
-    privacyConsentCheckbox:
-      'Li a Política de Privacidade e estou ciente de que o AMARternar+ pode armazenar localmente neste dispositivo dados de perfil, rotina, tarefas e registros inseridos por mim, exclusivamente para personalizar e organizar minha experiência no aplicativo.',
-    privacyConsentNotice:
-      'Você pode apagar os dados locais ou revogar esse aceite a qualquer momento em Perfil → Privacidade e dados.',
-    startUsingApp: 'Começar a usar o AMARternar+',
+   privacyConsentTitle: 'Privacidade e uso dos dados',
+
+privacyConsentDescription:
+  'Antes de começar, leia como o AMARternar+ utiliza as informações inseridas por você.',
+
+privacyConsentCheckbox:
+  'Li a Política de Privacidade e estou ciente de que o AMARternar+ pode armazenar localmente neste dispositivo dados de perfil, rotina, tarefas e registros inseridos por mim, exclusivamente para personalizar e organizar minha experiência no aplicativo.',
+
+privacyConsentNotice:
+  'Você pode apagar os dados locais ou revogar esse aceite a qualquer momento em Perfil → Privacidade e dados.',
+
+startUsingApp: 'Começar a usar o AMARternar+',
+
+privacyAndData: 'Privacidade e dados',
+
+privacyAndDataDescription:
+  'Consulte como suas informações são usadas, verifique o aceite de privacidade e controle os dados salvos neste dispositivo.',
+
+viewPrivacy: 'Ver privacidade e dados',
 
     onboardingWorkTitle: 'Como está sua rotina de trabalho hoje?',
     onboardingWorkSubtitle: 'Escolha a opção que mais combina com você.',
@@ -673,15 +684,25 @@ const translations = {
     cancelChange: 'Cancel changes',
     skipForNow: 'Skip for now',
 
-    privacyConsentTitle: 'Privacy and data use',
-    privacyConsentDescription:
-      'Before getting started, please read how AMARternar+ uses the information you enter.',
-    privacyConsentCheckbox:
-      'I have read the Privacy Policy and understand that AMARternar+ may store profile, routine, task, and record data locally on this device solely to personalize and organize my app experience.',
-    privacyConsentNotice:
-      'You can delete local data or withdraw this consent at any time in Profile → Privacy and data.',
-    startUsingApp: 'Start using AMARternar+',
+   privacyConsentTitle: 'Privacy and data use',
 
+privacyConsentDescription:
+  'Before getting started, please read how AMARternar+ uses the information you enter.',
+
+privacyConsentCheckbox:
+  'I have read the Privacy Policy and understand that AMARternar+ may store profile, routine, task, and record data locally on this device solely to personalize and organize my app experience.',
+
+privacyConsentNotice:
+  'You can delete local data or withdraw this consent at any time in Profile → Privacy and data.',
+
+startUsingApp: 'Start using AMARternar+',
+
+privacyAndData: 'Privacy and data',
+
+privacyAndDataDescription:
+  'See how your information is used, check your privacy consent, and manage the data saved on this device.',
+
+viewPrivacy: 'View privacy and data',
     onboardingWorkTitle: 'What is your work routine like today?',
     onboardingWorkSubtitle:
       'Choose the option that best describes you.',
