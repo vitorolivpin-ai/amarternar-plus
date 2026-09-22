@@ -5,6 +5,7 @@ import {
   Heart,
   Image,
   Pencil,
+  ShieldCheck,
   Trash2,
   User,
 } from 'lucide-react';
@@ -48,6 +49,7 @@ export default function Perfil({
   profile,
   onSave,
   onEditRoutine,
+  onNavigate,
 }) {
   const t = useStore((state) => state.t);
 
@@ -109,6 +111,9 @@ export default function Perfil({
         t('userFallbackName'),
       avatar,
       profilePhoto,
+      privacyConsent: {
+        ...profile?.privacyConsent,
+      },
       onboardingCompleted: true,
     };
 
@@ -347,6 +352,28 @@ export default function Perfil({
             <Pencil className="h-4 w-4" />
             {t('adjustRoutine')}
           </span>
+        </button>
+      </section>
+
+      <section className="rounded-2xl bg-white p-5 shadow-sm">
+        <div className="flex items-center gap-2">
+          <ShieldCheck className="h-5 w-5 text-[#8B7BA8]" />
+
+          <h2 className="font-bold text-gray-800">
+            {t('privacyAndData')}
+          </h2>
+        </div>
+
+        <p className="mt-2 text-sm leading-6 text-gray-500">
+          {t('privacyAndDataDescription')}
+        </p>
+
+        <button
+          type="button"
+          onClick={() => onNavigate?.('privacidade')}
+          className="mt-4 w-full rounded-xl border-2 border-[#B8A9C9] py-3 font-bold text-[#8B7BA8] transition-colors hover:bg-[#F5F0FF]"
+        >
+          {t('viewPrivacy')}
         </button>
       </section>
 
