@@ -1,82 +1,88 @@
 import { useMemo, useState } from 'react';
+
 import {
   Check,
   ChevronDown,
   ChevronUp,
   Heart,
   Sparkles,
-  ArrowLeft,
 } from 'lucide-react';
+
+import { useStore } from '../store';
 
 const careSteps = [
   {
     id: 1,
-    title: 'Separe o necessário',
-    subtitle: 'Deixe perto o que você pode precisar.',
+    titleKey: 'careStep1Title',
+    subtitleKey: 'careStep1Subtitle',
     icon: '👜',
     color: 'bg-amber-50 border-amber-200',
-    tips: [
-      'Tenha água por perto para se hidratar.',
-      'Separe fralda, pano limpo e itens do bebê.',
-      'Deixe o celular carregado, se precisar de orientação.',
+    tipKeys: [
+      'careStep1Tip1',
+      'careStep1Tip2',
+      'careStep1Tip3',
     ],
   },
   {
     id: 2,
-    title: 'Deixe tudo ao alcance',
-    subtitle: 'Evite se levantar durante a mamada.',
+    titleKey: 'careStep2Title',
+    subtitleKey: 'careStep2Subtitle',
     icon: '🪑',
     color: 'bg-blue-50 border-blue-200',
-    tips: [
-      'Escolha uma cadeira, sofá ou cama confortável.',
-      'Apoie suas costas e, se possível, seus pés.',
-      'Posicione os itens importantes perto de você.',
+    tipKeys: [
+      'careStep2Tip1',
+      'careStep2Tip2',
+      'careStep2Tip3',
     ],
   },
   {
     id: 3,
-    title: 'Cuide da higiene',
-    subtitle: 'Pequenos cuidados ajudam na rotina.',
+    titleKey: 'careStep3Title',
+    subtitleKey: 'careStep3Subtitle',
     icon: '🧼',
     color: 'bg-cyan-50 border-cyan-200',
-    tips: [
-      'Lave as mãos antes de cuidar do bebê.',
-      'Use panos limpos quando necessário.',
-      'Mantenha o espaço organizado e agradável.',
+    tipKeys: [
+      'careStep3Tip1',
+      'careStep3Tip2',
+      'careStep3Tip3',
     ],
   },
   {
     id: 4,
-    title: 'Monte sua rotina',
-    subtitle: 'Cada dia pode ficar um pouco mais leve.',
+    titleKey: 'careStep4Title',
+    subtitleKey: 'careStep4Subtitle',
     icon: '🗓️',
     color: 'bg-purple-50 border-purple-200',
-    tips: [
-      'Observe os horários em que o bebê costuma mamar.',
-      'Faça pausas para descansar quando puder.',
-      'Peça ajuda para alguém de confiança.',
+    tipKeys: [
+      'careStep4Tip1',
+      'careStep4Tip2',
+      'careStep4Tip3',
     ],
   },
   {
     id: 5,
-    title: 'Mantenha o que funciona',
-    subtitle: 'Repita os cuidados que ajudam você e o bebê.',
+    titleKey: 'careStep5Title',
+    subtitleKey: 'careStep5Subtitle',
     icon: '💛',
     color: 'bg-rose-50 border-rose-200',
-    tips: [
-      'Use esta lista sempre que precisar.',
-      'Ajuste a rotina conforme suas necessidades.',
-      'Procure apoio profissional se tiver dor ou dificuldade.',
+    tipKeys: [
+      'careStep5Tip1',
+      'careStep5Tip2',
+      'careStep5Tip3',
     ],
   },
 ];
 
 export default function CuidadosInteligentes() {
+  const t = useStore((state) => state.t);
+
   const [completedSteps, setCompletedSteps] = useState([]);
   const [openStep, setOpenStep] = useState(1);
 
   const progress = useMemo(() => {
-    return Math.round((completedSteps.length / careSteps.length) * 100);
+    return Math.round(
+      (completedSteps.length / careSteps.length) * 100
+    );
   }, [completedSteps]);
 
   function toggleCompleted(id) {
@@ -90,7 +96,9 @@ export default function CuidadosInteligentes() {
   }
 
   function toggleOpen(id) {
-    setOpenStep((previous) => (previous === id ? null : id));
+    setOpenStep((previous) => (
+      previous === id ? null : id
+    ));
   }
 
   return (
@@ -103,23 +111,23 @@ export default function CuidadosInteligentes() {
 
           <div>
             <p className="text-sm font-medium text-pink-100">
-              Organização simples para o dia a dia
+              {t('careHeaderEyebrow')}
             </p>
 
             <h1 className="text-2xl font-bold">
-              Cuidados Inteligentes
+              {t('smartCare')}
             </h1>
           </div>
         </div>
 
         <p className="text-sm leading-6 text-pink-50">
-          Pequenos passos para deixar sua rotina de amamentação mais confortável,
-          organizada e tranquila.
+          {t('careHeaderDescription')}
         </p>
 
         <div className="mt-5 rounded-2xl bg-white/15 p-4">
           <div className="mb-2 flex items-center justify-between text-sm">
-            <span>Seu progresso</span>
+            <span>{t('yourProgress')}</span>
+
             <span className="font-bold">{progress}%</span>
           </div>
 
@@ -131,7 +139,8 @@ export default function CuidadosInteligentes() {
           </div>
 
           <p className="mt-2 text-xs text-pink-100">
-            {completedSteps.length} de {careSteps.length} cuidados concluídos
+            {completedSteps.length} {t('of')} {careSteps.length}{' '}
+            {t('careStepsCompleted')}
           </p>
         </div>
       </div>
@@ -140,6 +149,7 @@ export default function CuidadosInteligentes() {
         {careSteps.map((step) => {
           const isCompleted = completedSteps.includes(step.id);
           const isOpen = openStep === step.id;
+          const stepTitle = t(step.titleKey);
 
           return (
             <article
@@ -157,15 +167,15 @@ export default function CuidadosInteligentes() {
                   <div className="flex items-start justify-between gap-2">
                     <div>
                       <p className="text-xs font-semibold text-gray-500">
-                        Cuidado {step.id}
+                        {t('careStep')} {step.id}
                       </p>
 
                       <h2 className="text-base font-bold text-gray-800">
-                        {step.title}
+                        {stepTitle}
                       </h2>
 
                       <p className="mt-1 text-sm leading-5 text-gray-600">
-                        {step.subtitle}
+                        {t(step.subtitleKey)}
                       </p>
                     </div>
 
@@ -174,8 +184,8 @@ export default function CuidadosInteligentes() {
                       onClick={() => toggleCompleted(step.id)}
                       aria-label={
                         isCompleted
-                          ? `Desmarcar ${step.title}`
-                          : `Marcar ${step.title} como concluído`
+                          ? `${t('unmark')} ${stepTitle}`
+                          : `${t('markAsCompleted')} ${stepTitle}`
                       }
                       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 transition ${
                         isCompleted
@@ -194,7 +204,9 @@ export default function CuidadosInteligentes() {
                     className="mt-4 flex w-full items-center justify-between rounded-xl bg-white/80 px-4 py-3 text-left text-sm font-semibold text-gray-700 transition hover:bg-white focus:outline-none focus:ring-2 focus:ring-pink-400"
                   >
                     <span>
-                      {isOpen ? 'Ocultar dicas' : 'Ver dicas simples'}
+                      {isOpen
+                        ? t('hideTips')
+                        : t('viewSimpleTips')}
                     </span>
 
                     {isOpen ? (
@@ -207,9 +219,9 @@ export default function CuidadosInteligentes() {
                   {isOpen && (
                     <div className="mt-3 rounded-xl bg-white/70 p-4">
                       <ul className="space-y-3">
-                        {step.tips.map((tip) => (
+                        {step.tipKeys.map((tipKey) => (
                           <li
-                            key={tip}
+                            key={tipKey}
                             className="flex items-start gap-3 text-sm leading-5 text-gray-700"
                           >
                             <Heart
@@ -218,7 +230,7 @@ export default function CuidadosInteligentes() {
                               fill="currentColor"
                             />
 
-                            <span>{tip}</span>
+                            <span>{t(tipKey)}</span>
                           </li>
                         ))}
                       </ul>
@@ -233,13 +245,11 @@ export default function CuidadosInteligentes() {
 
       <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4">
         <p className="text-sm font-bold text-amber-900">
-          Atenção aos sinais do seu corpo
+          {t('careWarningTitle')}
         </p>
 
         <p className="mt-1 text-sm leading-6 text-amber-800">
-          Dor forte, febre, vermelhidão intensa na mama ou dificuldade para o
-          bebê mamar são sinais para procurar uma unidade de saúde ou um
-          profissional de confiança.
+          {t('careWarningDescription')}
         </p>
       </div>
     </section>
