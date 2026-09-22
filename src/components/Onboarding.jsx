@@ -6,155 +6,157 @@ import {
   Heart,
 } from 'lucide-react';
 
-const questions = [
+import { useStore } from '../store';
+
+const questionDefinitions = [
   {
     id: 'workType',
-    title: 'Como está sua rotina de trabalho hoje?',
-    subtitle: 'Escolha a opção que mais combina com você.',
+    titleKey: 'onboardingWorkTitle',
+    subtitleKey: 'onboardingWorkSubtitle',
     options: [
       {
         value: 'clt',
-        label: 'Trabalho com carteira assinada',
+        labelKey: 'workClt',
       },
       {
         value: 'autonoma',
-        label: 'Trabalho por conta própria',
+        labelKey: 'workAutonomous',
       },
       {
         value: 'informal',
-        label: 'Trabalho sem horário fixo',
+        labelKey: 'workInformal',
       },
       {
         value: 'estudante',
-        label: 'Estou estudando',
+        labelKey: 'workStudent',
       },
       {
         value: 'sem_trabalho',
-        label: 'Não estou trabalhando no momento',
+        labelKey: 'workNotWorking',
       },
       {
         value: 'nao_informar',
-        label: 'Prefiro não informar',
+        labelKey: 'preferNotToSay',
       },
     ],
   },
   {
     id: 'schedule',
-    title: 'Como costuma ser seu horário?',
-    subtitle: 'Isso ajuda a organizar sugestões para sua rotina.',
+    titleKey: 'onboardingScheduleTitle',
+    subtitleKey: 'onboardingScheduleSubtitle',
     showWhen: (answers) =>
       !['sem_trabalho', 'nao_informar'].includes(answers.workType),
     options: [
       {
         value: 'fixo_dia',
-        label: 'Horário fixo durante o dia',
+        labelKey: 'scheduleFixedDay',
       },
       {
         value: 'manha',
-        label: 'Turno da manhã',
+        labelKey: 'scheduleMorning',
       },
       {
         value: 'tarde',
-        label: 'Turno da tarde',
+        labelKey: 'scheduleAfternoon',
       },
       {
         value: 'noite',
-        label: 'Turno da noite',
+        labelKey: 'scheduleNight',
       },
       {
         value: '12x36',
-        label: 'Escala 12x36',
+        labelKey: 'scheduleTwelveByThirtySix',
       },
       {
         value: 'variavel',
-        label: 'Horários variáveis',
+        labelKey: 'scheduleVariable',
       },
       {
         value: 'casa',
-        label: 'Trabalho ou estudo em casa',
+        labelKey: 'scheduleHome',
       },
       {
         value: 'outro',
-        label: 'Outro ou não sei',
+        labelKey: 'scheduleOther',
       },
     ],
   },
   {
     id: 'babyCare',
-    title: 'Enquanto você trabalha ou estuda, quem cuida do bebê?',
-    subtitle: 'Você poderá mudar essa informação depois.',
+    titleKey: 'onboardingBabyCareTitle',
+    subtitleKey: 'onboardingBabyCareSubtitle',
     showWhen: (answers) =>
       !['sem_trabalho', 'nao_informar'].includes(answers.workType),
     options: [
       {
         value: 'creche',
-        label: 'O bebê vai para a creche',
+        labelKey: 'babyCareDaycare',
       },
       {
         value: 'familiar',
-        label: 'O bebê fica com familiar',
+        labelKey: 'babyCareFamily',
       },
       {
         value: 'cuidador',
-        label: 'O bebê fica com cuidador(a)',
+        labelKey: 'babyCareCaregiver',
       },
       {
         value: 'comigo',
-        label: 'O bebê fica comigo',
+        labelKey: 'babyCareWithMe',
       },
       {
         value: 'organizando',
-        label: 'Ainda estou organizando',
+        labelKey: 'babyCareOrganizing',
       },
       {
         value: 'nao_informar',
-        label: 'Prefiro não informar',
+        labelKey: 'preferNotToSay',
       },
     ],
   },
   {
     id: 'priority',
-    title: 'O que você mais precisa organizar agora?',
-    subtitle: 'Vamos destacar os recursos mais úteis para você.',
+    titleKey: 'onboardingPriorityTitle',
+    subtitleKey: 'onboardingPrioritySubtitle',
     options: [
       {
         value: 'retorno',
-        label: 'Retorno ao trabalho ou estudo',
+        labelKey: 'priorityReturnToWork',
       },
       {
         value: 'ordenha',
-        label: 'Ordenha e armazenamento',
+        labelKey: 'priorityPumping',
       },
       {
         value: 'direitos',
-        label: 'Meus direitos como lactante',
+        labelKey: 'priorityRights',
       },
       {
         value: 'tarefas',
-        label: 'Minha rotina e tarefas da semana',
+        labelKey: 'priorityTasks',
       },
       {
         value: 'mapa',
-        label: 'Encontrar apoio perto de mim',
+        labelKey: 'priorityMap',
       },
       {
         value: 'cuidados',
-        label: 'Cuidados comigo e com o bebê',
+        labelKey: 'priorityCare',
       },
     ],
   },
   {
     id: 'wantsTutorial',
-    title: 'Quer receber dicas de como usar o aplicativo?',
-    subtitle: 'Você poderá ativar ou desativar isso depois.',
+    titleKey: 'onboardingTutorialTitle',
+    subtitleKey: 'onboardingTutorialSubtitle',
     options: [
       {
         value: true,
-        label: 'Sim, quero explicações simples',
+        labelKey: 'tutorialYes',
       },
       {
         value: false,
-        label: 'Não, consigo usar por conta própria',
+        labelKey: 'tutorialNo',
       },
     ],
   },
@@ -165,6 +167,8 @@ export default function Onboarding({
   onComplete,
   onCancel,
 }) {
+  const t = useStore((state) => state.t);
+
   const initialAnswers = useMemo(() => {
     const savedRoutine = profile?.routine || {};
 
@@ -188,7 +192,7 @@ export default function Onboarding({
     setStepIndex(0);
   }, [initialAnswers]);
 
-  const visibleQuestions = questions.filter((question) => {
+  const visibleQuestions = questionDefinitions.filter((question) => {
     if (!question.showWhen) {
       return true;
     }
@@ -285,20 +289,19 @@ export default function Onboarding({
               <p className="text-sm text-white/80">AMARternar+</p>
 
               <h1 className="text-xl font-bold">
-                Vamos organizar sua rotina?
+                {t('onboardingHeaderTitle')}
               </h1>
             </div>
           </div>
 
           <p className="mt-4 text-sm leading-6 text-white/90">
-            Responda algumas perguntas rápidas para deixar o aplicativo mais
-            útil para você. Todas as áreas continuarão disponíveis.
+            {t('onboardingHeaderDescription')}
           </p>
 
           <div className="mt-5">
             <div className="mb-2 flex justify-between text-xs text-white/80">
               <span>
-                Etapa {stepIndex + 1} de {totalSteps}
+                {t('step')} {stepIndex + 1} {t('of')} {totalSteps}
               </span>
 
               <span>{progress}%</span>
@@ -315,11 +318,11 @@ export default function Onboarding({
 
         <section className="p-6">
           <h2 className="text-xl font-bold text-gray-800">
-            {currentQuestion?.title}
+            {currentQuestion ? t(currentQuestion.titleKey) : ''}
           </h2>
 
           <p className="mt-2 text-sm leading-5 text-gray-500">
-            {currentQuestion?.subtitle}
+            {currentQuestion ? t(currentQuestion.subtitleKey) : ''}
           </p>
 
           <div className="mt-5 space-y-3">
@@ -349,7 +352,7 @@ export default function Onboarding({
                   </span>
 
                   <span className="text-sm font-medium text-gray-700">
-                    {option.label}
+                    {t(option.labelKey)}
                   </span>
                 </button>
               );
@@ -362,7 +365,7 @@ export default function Onboarding({
                 type="button"
                 onClick={goBack}
                 className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#E6E6FA] text-[#8B7BA8] transition-colors hover:bg-[#F5F0FF]"
-                aria-label="Voltar"
+                aria-label={t('back')}
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
@@ -379,8 +382,8 @@ export default function Onboarding({
               }`}
             >
               {stepIndex === visibleQuestions.length - 1
-                ? 'Ver minhas sugestões'
-                : 'Continuar'}
+                ? t('viewSuggestions')
+                : t('continue')}
             </button>
           </div>
 
@@ -390,7 +393,7 @@ export default function Onboarding({
               onClick={onCancel}
               className="mt-4 w-full text-sm text-[#8B7BA8] hover:underline"
             >
-              Cancelar alteração
+              {t('cancelChange')}
             </button>
           ) : (
             <button
@@ -398,7 +401,7 @@ export default function Onboarding({
               onClick={skipOnboarding}
               className="mt-4 w-full text-sm text-[#8B7BA8] hover:underline"
             >
-              Pular por enquanto
+              {t('skipForNow')}
             </button>
           )}
         </section>
